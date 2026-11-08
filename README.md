@@ -17,6 +17,27 @@ Game chạy trên máy tính của bạn, gắn vào TikTok LIVE Studio như m�
 - **Sân thi đầu làng**: câu hỏi viết phấn lên bảng đen dưới mái tranh. Ai nộp bài thì được ngồi một bàn, tên hiện trên đầu, điểm cao ngồi các hàng giữa. Ai chưa có ghế thì tên hiện trên đám trẻ con chạy lên chạy xuống lối giữa. Hai bên sân có các cụ ngồi xem, cây đa đung đưa, lá rơi lác đác. Chữ trên mái tranh và tên ông đồ đổi được ở trang điều khiển.
 - **Chạy cả buổi**: hết ván tự sang ván mới; mất kết nối TikTok thì tự kết nối lại.
 
+## Chạy nhanh (cho dev)
+
+Bản đủ bước nằm ở các mục bên dưới. Nếu bạn đã quen code, làm thế này:
+
+1. Cài **Node.js 20+**, giải nén hoặc `git clone` game vào thư mục có đường dẫn ngắn, không dấu.
+2. Bấm đúp **`start-live.bat`** (Windows). Lần đầu nó tự chạy `npm install`, vài giây sau mở trình duyệt ở `http://localhost:3007` (trang điều khiển).
+3. Trang stage để đưa vào TikTok LIVE Studio: `http://lvh.me:3007/?view=stage` (1080 × 1920).
+4. Phát trực tiếp trong LIVE Studio trước, rồi nhập tên TikTok ở trang điều khiển và bấm **Kết nối**.
+5. Giữ cửa sổ đen của start-live mở suốt buổi. Đóng cửa sổ là tắt game.
+
+Máy Mac hoặc Linux không có `.bat`: chạy `npm install`, rồi `PORT=3007 LIVE_MODE=1 npm run dev`.
+
+Trước khi sửa code chạy `npm test` và `npm run lint`, cả hai phải qua. Muốn thử không cần live thì bấm **Giả lập 60 người** trên trang điều khiển.
+
+Lưu ý khi chạy lần đầu trên máy mới:
+
+- Chưa cài VieNeu-TTS cũng không sao, game dùng giọng Edge (cần mạng). Muốn dùng VieNeu thì sửa dòng `set VIENEU_DIR=...` trong `start-live.bat`.
+- Game chạy trên server. Tắt bật server hoặc tải lại trang stage trong 10 phút thì ván đang chơi được chơi tiếp (`data/room.json`). Muốn bắt đầu sạch thì bấm **Bắt đầu ván mới ngay** hoặc xoá `data/room.json` khi server đang tắt.
+- Mở nhiều trang stage thì chỉ trang mở sau cùng có tiếng. Thấy câm thì kiểm tra xem có trang stage nào mở sau không.
+- Cổng 3007 bận thì đóng bản game cũ, đừng đổi cổng.
+
 ## Cần chuẩn bị
 
 1. Máy tính **Windows 10 hoặc 11**, có mạng.

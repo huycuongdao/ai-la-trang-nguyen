@@ -7,3 +7,5 @@ dist/
 settings.json
 data/
 data-backup-*/
+plans/
+.DS_Store
