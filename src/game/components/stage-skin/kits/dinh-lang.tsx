@@ -38,6 +38,8 @@ function Scene() {
       />
       {/* cloud strip hides where the floor meets the wall; shows on both sides of the pavilion */}
       <img src={s.art.cloudBorder} className="absolute left-0" style={{ top: g.cloudY, width: 1080, height: g.cloudH }} draggable={false} />
+      {/* wide steps behind the pavilion: they carry the pavilion's own steps out to the edges of the screen */}
+      <img src={s.art.steps} className="absolute" style={{ left: g.steps.x, top: g.steps.y, width: g.steps.w }} draggable={false} />
       <img src={s.art.pavilion} className="absolute" style={{ left: p.x, top: p.y, width: p.w, filter: 'drop-shadow(0 14px 14px rgba(40,6,2,.5))' }} draggable={false} />
       <img src={s.art.titleSign} className="absolute" style={{ left: t.x, top: t.y, width: t.w, filter: 'drop-shadow(0 6px 8px rgba(0,0,0,.45))' }} draggable={false} />
     </div>

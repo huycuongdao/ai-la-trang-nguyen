@@ -12,7 +12,7 @@ import type { Mood } from './common';
 /** Slots of the 14-picture set made like art-source/dinh-lang (other kits may use other names) */
 export type DinhArtKey =
   | 'background' | 'floor' | 'pavilion' | 'titleSign' | 'host' | 'gongClock' | 'questionSign'
-  | 'answerFrame' | 'mat' | 'avatarRing' | 'namePlate' | 'avatarMale' | 'avatarFemale' | 'cloudBorder';
+  | 'answerFrame' | 'mat' | 'avatarRing' | 'namePlate' | 'avatarMale' | 'avatarFemale' | 'cloudBorder' | 'steps';
 
 /** [left, top, right, bottom] in pixels of the source picture */
 export type Box = readonly [number, number, number, number];
@@ -148,4 +148,5 @@ export const artPaths = (id: string): Record<DinhArtKey, string> => ({
   avatarMale: `/assets/${id}/avatar-male.webp`,
   avatarFemale: `/assets/${id}/avatar-female.webp`,
   cloudBorder: `/assets/${id}/cloud-border.webp`,
+  steps: `/assets/${id}/steps-wide.webp`,
 });

@@ -24,7 +24,7 @@ export const DINH_LANG: Skin = {
     status: { x: 140, y: 1163, w: 800, h: 46 },
     mat: { x: 54, y: 1218, w: 972, h: 450 },
     host: { x: -24, y: 428, h: 480 },
-    ground: { floorY: 840, cloudY: 640, cloudH: 360 },
+    ground: { floorY: 840, cloudY: 640, cloudH: 360, steps: { x: 0, y: 775, w: 1080 } },
     sideSigns: { left: { x: 16, y: 26 }, right: { x: 854, y: 26 }, w: 210, pills: { x: 28, y: 82 } },
     leaderboard: { x: 90, y: 158, w: 900, h: 226 },
     gift: { x: 908, y: 398, w: 160 },

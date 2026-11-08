@@ -27,13 +27,14 @@ const MIN_PART = 0.004; // mảng nhỏ hơn 0,4% mảng lớn nhất thì bỏ
 // `maxW`: chiều rộng tối đa riêng cho từng tên ra. Tên ra phải khớp ảnh mà kit của chủ đề dùng (stage-skin/skins, kits).
 const DINH_NAMES = {
   '00': 'background', '01': 'floor', '02': 'pavilion', '03': 'title-sign', '04': 'host', '05': 'gong-clock', '06': 'question-sign',
-  '07': 'answer-frame', '08': 'mat', '09': 'avatar-ring', '10': 'name-plate', '11': 'avatar-male', '12': 'avatar-female', '13': 'cloud-border',
+  '07': 'answer-frame', '08': 'mat', '09': 'avatar-ring', '10': 'name-plate', '11': 'avatar-male', '12': 'avatar-female', '13': 'cloud-border', '14': 'steps-wide',
 };
 const RULES = {
   'dinh-lang': {
     names: DINH_NAMES,
     trim: false, // số đo trong skin tính trên khung ảnh gốc
-    maxW: { background: 1080, floor: 1080, pavilion: 1200, 'title-sign': 1080, host: 480, 'gong-clock': 768, 'question-sign': 1200, 'answer-frame': 900, mat: 1080, 'avatar-ring': 512, 'name-plate': 640, 'avatar-male': 512, 'avatar-female': 512, 'cloud-border': 1440 },
+    trimNames: ['steps-wide'], // riêng ảnh này cắt viền trong suốt (chỉ cần bề rộng khi đặt)
+    maxW: { background: 1080, floor: 1080, pavilion: 1200, 'title-sign': 1080, host: 480, 'gong-clock': 768, 'question-sign': 1200, 'answer-frame': 900, mat: 1080, 'avatar-ring': 512, 'name-plate': 640, 'avatar-male': 512, 'avatar-female': 512, 'cloud-border': 1440, 'steps-wide': 1600 },
   },
   'vua-khan-dai': {
     trim: true,
@@ -54,7 +55,7 @@ if (!fs.existsSync(SRC)) {
 fs.mkdirSync(OUT, { recursive: true });
 const files = fs.readdirSync(SRC).filter((f) => /^\d+-.+\.(png|webp|jpg)$/i.test(f)).sort();
 if (rule.names) {
-  const missing = Object.keys(rule.names).filter((n) => !files.some((f) => f.startsWith(`${n}-`)));
+  const missing = Object.keys(rule.names).filter((n) => n !== '14').filter((n) => !files.some((f) => f.startsWith(`${n}-`)));
   if (missing.length) {
     console.error(`thiếu ảnh gốc số ${missing.join(', ')} trong art-source/${theme}`);
     process.exit(1);
@@ -109,7 +110,7 @@ for (const file of files) {
     }
     if (removed) console.log(`${to}: bỏ ${sizes.filter((s1) => s1 < biggest * MIN_PART).length} mảng rời (${removed}px)`);
     img = sharp(data, { raw: { width: W, height: H, channels: 4 } });
-    if (rule.trim && dropSmall) img = sharp(await img.png().toBuffer()).trim({ background: { r: 0, g: 0, b: 0, alpha: 0 }, threshold: 1 });
+    if ((rule.trim || rule.trimNames?.includes(to)) && dropSmall) img = sharp(await img.png().toBuffer()).trim({ background: { r: 0, g: 0, b: 0, alpha: 0 }, threshold: 1 });
   }
   const maxW = rule.maxW[to] ?? 1200;
   const outInfo = await img.resize({ width: maxW, withoutEnlargement: true }).webp({ quality: 90, alphaQuality: 100, effort: 5 }).toFile(path.join(OUT, `${to}.webp`));

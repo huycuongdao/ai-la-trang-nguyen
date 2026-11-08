@@ -20,7 +20,7 @@ const EXPANDED = [
 ];
 
 // Skins (src/game/components/stage-skin/skin.tsx) build their 14 picture paths from `artPaths('<theme>')`
-const SKIN_FILES = ['background', 'floor', 'pavilion', 'title-sign', 'host', 'gong-clock', 'question-sign', 'answer-frame', 'mat', 'avatar-ring', 'name-plate', 'avatar-male', 'avatar-female', 'cloud-border'];
+const SKIN_FILES = ['background', 'floor', 'pavilion', 'title-sign', 'host', 'gong-clock', 'question-sign', 'answer-frame', 'mat', 'avatar-ring', 'name-plate', 'avatar-male', 'avatar-female', 'cloud-border', 'steps-wide'];
 
 const wanted = new Set();
 for (const file of walk(path.join(ROOT, 'src')).filter((f) => /\.(ts|tsx|css)$/.test(f))) {
