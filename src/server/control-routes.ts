@@ -4,7 +4,13 @@ import type { Broadcast } from './sse-hub';
 import { addLikes } from './tiktok-connection';
 
 // ---------- Lệnh từ trang điều khiển (chỉ trang stage làm theo) ----------
-export function registerControlRoutes(app: Express, broadcast: Broadcast, clientCount: () => number) {
+export function registerControlRoutes(
+  app: Express,
+  broadcast: Broadcast,
+  clientCount: () => number,
+  /** Commands the game host carries out (speak, reset, start now, skip question) */
+  onCommand: (action: string, text?: string) => void,
+) {
   const CONTROL_ACTIONS = ['speak', 'setRate', 'reset', 'setName', 'custom'];
   app.post('/api/control', (req, res) => {
     const { action, text } = req.body || {};
@@ -27,6 +33,7 @@ export function registerControlRoutes(app: Express, broadcast: Broadcast, client
       }
     }
     broadcast('control', payload);
+    onCommand(action, payload.text);
     res.json({ success: true, pages: clientCount() });
   });
 
@@ -40,12 +47,6 @@ export function registerControlRoutes(app: Express, broadcast: Broadcast, client
       event.totalLikes = addLikes(Number(event.likeCount) || 1);
     }
     broadcast(type, event);
-    res.json({ success: true });
-  });
-
-  // Trang stage chạy game, gửi ảnh chụp lên đây; trang điều khiển vẽ lại ảnh chụp đó (xem trước luôn khớp live)
-  app.post('/api/game/state', (req, res) => {
-    broadcast('gamestate', req.body || {});
     res.json({ success: true });
   });
 }

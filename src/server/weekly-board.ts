@@ -21,27 +21,62 @@ function docTuan(): BangTuan {
   }
   return { tuan: tuanNay(), ds: {} };
 }
-const topTuan = (b: BangTuan, n = 10) =>
+export const topTuan = (b: BangTuan, n = 10) =>
   Object.values(b.ds)
     .sort((a, c) => c.diem - a.diem)
     .slice(0, n)
     .map((x) => ({ id: Object.keys(b.ds).find((k) => b.ds[k] === x), name: x.name, avatar: x.avatar, diem: x.diem }));
 
+export type WeeklyEntry = { id: string; name: string; avatar: string; diem: number };
+
+/** Questions already asked and when, so the game prefers questions not asked for a long time */
+export function loadUsedQuestions(): Record<string, number> {
+  try {
+    return JSON.parse(fs.readFileSync(USED_FILE, 'utf8'));
+  } catch {
+    return {};
+  }
+}
+
+export function saveUsedQuestions(used: Record<string, number>) {
+  const clean: Record<string, number> = {};
+  for (const [k, v] of Object.entries(used)) if (typeof v === 'number' && k.length < 300) clean[k] = v;
+  writeJsonAtomic(USED_FILE, clean);
+}
+
+/** Current week's top players (resets on Monday) */
+export const weeklyTop = (n = 10) => topTuan(docTuan(), n);
+
+/** Add one finished round's scores to this week's board; returns the new top */
+export function addToWeekly(ds: unknown[]) {
+  const b = docTuan();
+  for (const x of ds.slice(0, 2000) as Record<string, unknown>[]) {
+    const id = typeof x?.id === 'string' ? x.id.slice(0, 100) : '';
+    const diem = Number(x?.diem);
+    if (!id || !Number.isFinite(diem) || diem <= 0 || diem > 20_000) continue; // 1 ván tối đa ~8.000 điểm
+    const cu = b.ds[id] ?? { name: '', avatar: '', diem: 0, van: 0 };
+    b.ds[id] = {
+      name: String(x.name ?? cu.name).slice(0, 60),
+      avatar: typeof x.avatar === 'string' && x.avatar.startsWith('https://') ? x.avatar.slice(0, 500) : cu.avatar,
+      diem: cu.diem + Math.round(diem),
+      van: cu.van + 1,
+    };
+  }
+  try {
+    writeJsonAtomic(TUAN_FILE, b);
+  } catch (err) {
+    console.error('Không lưu được data/weekly-board.json:', err);
+  }
+  return topTuan(b);
+}
+
 export function registerDataRoutes(app: Express) {
-  app.get('/api/da-hoi', (_req, res) => {
-    try {
-      res.json(JSON.parse(fs.readFileSync(USED_FILE, 'utf8')));
-    } catch {
-      res.json({});
-    }
-  });
+  app.get('/api/da-hoi', (_req, res) => res.json(loadUsedQuestions()));
   app.post('/api/da-hoi', (req, res) => {
     const body = req.body;
     if (!body || typeof body !== 'object' || Array.isArray(body)) return res.status(400).json({ success: false });
-    const clean: Record<string, number> = {};
-    for (const [k, v] of Object.entries(body)) if (typeof v === 'number' && k.length < 300) clean[k] = v;
     try {
-      writeJsonAtomic(USED_FILE, clean);
+      saveUsedQuestions(body);
       res.json({ success: true });
     } catch (err) {
       console.error('Không lưu được data/used-questions.json:', err);
@@ -49,28 +84,10 @@ export function registerDataRoutes(app: Express) {
     }
   });
 
-  app.get('/api/bang-tuan', (_req, res) => res.json({ top: topTuan(docTuan()) }));
+  app.get('/api/bang-tuan', (_req, res) => res.json({ top: weeklyTop() }));
   app.post('/api/bang-tuan', (req, res) => {
-    const ds = Array.isArray(req.body?.ds) ? req.body.ds.slice(0, 2000) : null;
+    const ds = Array.isArray(req.body?.ds) ? req.body.ds : null;
     if (!ds) return res.status(400).json({ success: false });
-    const b = docTuan();
-    for (const x of ds) {
-      const id = typeof x?.id === 'string' ? x.id.slice(0, 100) : '';
-      const diem = Number(x?.diem);
-      if (!id || !Number.isFinite(diem) || diem <= 0 || diem > 20_000) continue; // 1 ván tối đa ~8.000 điểm
-      const cu = b.ds[id] ?? { name: '', avatar: '', diem: 0, van: 0 };
-      b.ds[id] = {
-        name: String(x.name ?? cu.name).slice(0, 60),
-        avatar: typeof x.avatar === 'string' && x.avatar.startsWith('https://') ? x.avatar.slice(0, 500) : cu.avatar,
-        diem: cu.diem + Math.round(diem),
-        van: cu.van + 1,
-      };
-    }
-    try {
-      writeJsonAtomic(TUAN_FILE, b);
-    } catch (err) {
-      console.error('Không lưu được data/weekly-board.json:', err);
-    }
-    res.json({ top: topTuan(b) });
+    res.json({ top: addToWeekly(ds) });
   });
 }

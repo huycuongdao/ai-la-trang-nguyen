@@ -125,9 +125,9 @@ Các file bạn hay sửa nhất đều mở được bằng Notepad. Sửa xong
 
 ## Cho người biết code
 
-- Node.js + TypeScript. Server Express chia theo việc trong `src/server/` (`server.ts` chỉ khởi động), giao diện React 19 + Vite + Tailwind 4, hiệu ứng `motion`, kết nối TikTok bằng `tiktok-live-connector` 2.x.
+- Node.js + TypeScript. Server Express chia theo việc trong `src/server/` (`server.ts` chỉ khởi động); game chạy hẳn trên server (`src/server/game-host.ts`), trang stage và trang điều khiển chỉ vẽ lại, trang stage còn phát tiếng, giao diện React 19 + Vite + Tailwind 4, hiệu ứng `motion`, kết nối TikTok bằng `tiktok-live-connector` 2.x.
 - Lõi luật chơi (không phụ thuộc React): `src/game/engine/exam.ts`. Màn hình 1080 × 1920: `src/game/components/GameStage.tsx`. Âm thanh tự tạo bằng Web Audio: `src/game/audio/sfx.ts`.
-- Thư mục `src/game`: `components/` (giao diện), `hooks/` (nối sự kiện TikTok với game), `engine/` (luật chơi và test), `audio/`, `utils/`, `questions/` (bộ câu hỏi). Thư mục `src/live`: `components/`, `hooks/`, `context/` (vai trò trang stage hay điều khiển), `utils/`.
+- Thư mục `src/game`: `components/` (giao diện), `hooks/` (vẽ màn hình, đọc lời ông đồ do server gửi), `engine/` (luật chơi và test), `audio/`, `utils/`, `questions/` (bộ câu hỏi). Thư mục `src/live`: `components/`, `hooks/`, `context/` (vai trò trang stage hay điều khiển), `utils/`.
 - Kiểm tra: `npm test` chạy luật chơi, ván chơi mẫu có hạt giống cố định (so với `src/game/engine/fixtures/golden-run.json`), ghi file an toàn, danh sách API, chuyển file dữ liệu, bộ câu hỏi và đường dẫn ảnh. `npm run lint` kiểm tra kiểu.
 - Dữ liệu chạy lúc live nằm ở `data/` (`used-questions.json`, `weekly-board.json`), tên kênh ở `settings.json`; cả hai không đưa lên git.
 - Server chỉ nghe `127.0.0.1`, người cùng mạng Wi-Fi không điều khiển được.

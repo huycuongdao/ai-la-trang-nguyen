@@ -130,11 +130,11 @@ export class WishLimiter {
 }
 
 /** Chọn ngẫu nhiên, không lặp lại câu vừa đọc */
-export function makePicker() {
+export function makePicker(rand: () => number = Math.random) {
   const lastIndex = new Map<readonly unknown[], number>();
   return <T,>(list: readonly T[]): T | undefined => {
     if (!list.length) return undefined;
-    let i = Math.floor(Math.random() * list.length);
+    let i = Math.floor(rand() * list.length);
     if (list.length > 1 && i === lastIndex.get(list)) i = (i + 1) % list.length;
     lastIndex.set(list, i);
     return list[i];

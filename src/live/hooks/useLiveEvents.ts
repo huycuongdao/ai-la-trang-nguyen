@@ -35,7 +35,8 @@ export function useLiveEvents(handlers: LiveHandlers, { stageId = '' }: { stageI
       on('like', (d) => ref.current.onLike?.(d));
       on('roomUser', (d) => ref.current.onViewers?.(d.viewerCount));
       on('control', (d) => ref.current.onControl?.(d));
-      on('gamestate', (d) => ref.current.onGameState?.(d));
+      on('view', (d) => ref.current.onView?.(d));
+      on('say', (d) => ref.current.onSay?.(d));
       on('caiDat', (d) => ref.current.onCaiDat?.(d));
       // trang stage bị trang mới hơn thay chỗ: im lặng hẳn và thôi gửi dữ liệu
       on('speaker', (d) => stageId && voice.setSpeaker(d.id === stageId));

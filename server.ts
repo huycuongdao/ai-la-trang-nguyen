@@ -21,6 +21,7 @@ import { registerControlRoutes } from './src/server/control-routes';
 import { registerDataRoutes } from './src/server/weekly-board';
 import { registerTts } from './src/server/tts/tts-routes';
 import { registerGameHost } from './src/server/game-host';
+import { GAME } from './src/game/config';
 
 migrateData(); // old Vietnamese data file names -> English, before anything reads data
 
@@ -32,18 +33,29 @@ app.use(express.json({ limit: '4mb' })); // round snapshots with hundreds of pla
 app.use('/assets', express.static(path.join(ROOT, 'public', 'assets')));
 
 const hub = createSseHub();
+// Everything that reaches the browsers also reaches the game host (chat, gifts, likes...)
+let host: ReturnType<typeof registerGameHost> | null = null;
+const broadcast = (type: string, data: unknown) => {
+  hub.broadcast(type, data);
+  host?.onLiveEvent(type, data);
+};
 hub.register(app, () => [
   { event: 'status', data: getLiveStats() },
   { event: 'caiDat', data: caiDat() },
   ...(lastControl.rate ? [{ event: 'control', data: lastControl.rate }] : []),
   ...(lastControl.name ? [{ event: 'control', data: lastControl.name }] : []),
+  ...(host?.currentView() ? [{ event: 'view', data: host.currentView() }] : []),
 ]);
-registerTikTok(app, { broadcast: hub.broadcast, saveSettings, savedUser: savedTikTokUser() });
-registerControlRoutes(app, hub.broadcast, hub.clientCount);
+registerTikTok(app, { broadcast, saveSettings, savedUser: savedTikTokUser() });
+registerControlRoutes(app, broadcast, hub.clientCount, (action, text) => host?.command(action, text));
 registerSettings(app, hub.broadcast);
 registerDataRoutes(app);
 registerTts(app);
-registerGameHost(app, {});
+host = registerGameHost(app, {
+  broadcast: hub.broadcast,
+  stageCount: hub.stageCount,
+  channelName: () => lastControl.name?.text ?? GAME.defaultChannelName,
+});
 
 // ---------- Khởi động ----------
 async function start() {

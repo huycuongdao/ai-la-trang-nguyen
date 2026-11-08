@@ -55,5 +55,5 @@ export function createSseHub() {
     });
   }
 
-  return { broadcast, register, clientCount: () => sseClients.length };
+  return { broadcast, register, clientCount: () => sseClients.length, stageCount: () => stageIds.length };
 }

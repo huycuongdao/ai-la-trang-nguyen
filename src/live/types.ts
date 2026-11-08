@@ -49,6 +49,12 @@ export interface ControlCommand {
   text?: string;
 }
 
+/** A line for the stage page to speak (or a prefetch / stop order). Answer each `id` with POST /api/game/spoken. */
+export type SayEvent =
+  | { id: number; text: string; priority: boolean }
+  | { prefetch: true; text: string }
+  | { stop: true };
+
 export interface LiveHandlers {
   onStatus?: (s: LiveStatus) => void;
   onChat?: (e: ChatEvent) => void;
@@ -59,6 +65,7 @@ export interface LiveHandlers {
   onLike?: (e: LikeEvent) => void;
   onViewers?: (count: number) => void;
   onControl?: (c: ControlCommand) => void;
-  onGameState?: (s: any) => void; // ảnh chụp màn hình game do trang stage gửi
+  onView?: (v: any) => void; // ảnh chụp màn hình game do server gửi (4 lần / giây)
+  onSay?: (s: SayEvent) => void; // lời ông đồ cần đọc (chỉ trang stage phát)
   onCaiDat?: (c: { tieuDe: string; tenOngDo: string }) => void; // tên game, tên ông đồ (trang điều khiển sửa)
 }
