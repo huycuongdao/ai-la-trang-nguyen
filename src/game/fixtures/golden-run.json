@@ -1,0 +1,726 @@
+{
+  "transitions": [
+    "cho:1",
+    "vong:1",
+    "doc:1",
+    "hoi:1",
+    "chot:1",
+    "dapAn:1",
+    "doc:2",
+    "hoi:2",
+    "chot:2",
+    "dapAn:2",
+    "doc:3",
+    "hoi:3",
+    "chot:3",
+    "dapAn:3",
+    "doc:4",
+    "hoi:4",
+    "chot:4",
+    "dapAn:4",
+    "doc:5",
+    "hoi:5",
+    "chot:5",
+    "dapAn:5",
+    "bangVang:6",
+    "vong:6",
+    "doc:6",
+    "hoi:6",
+    "chot:6",
+    "dapAn:6",
+    "doc:7",
+    "hoi:7",
+    "doc:8",
+    "hoi:8",
+    "chot:8",
+    "dapAn:8",
+    "doc:9",
+    "hoi:9",
+    "chot:9",
+    "dapAn:9",
+    "doc:10",
+    "hoi:10",
+    "chot:10",
+    "dapAn:10",
+    "bangVang:11",
+    "vong:11",
+    "doc:11",
+    "hoi:11",
+    "chot:11",
+    "dapAn:11",
+    "doc:12",
+    "hoi:12",
+    "chot:12",
+    "dapAn:12",
+    "doc:13",
+    "hoi:13",
+    "chot:13",
+    "dapAn:13",
+    "doc:14",
+    "hoi:14",
+    "chot:14",
+    "dapAn:14",
+    "doc:15",
+    "hoi:15",
+    "chot:15",
+    "dapAn:15",
+    "bangVang:16",
+    "vong:16",
+    "doc:16",
+    "hoi:16",
+    "chot:16",
+    "dapAn:16",
+    "doc:17",
+    "hoi:17",
+    "chot:17",
+    "dapAn:17",
+    "doc:18",
+    "hoi:18",
+    "chot:18",
+    "dapAn:18",
+    "doc:19",
+    "hoi:19",
+    "chot:19",
+    "dapAn:19",
+    "doc:20",
+    "hoi:20",
+    "chot:20",
+    "dapAn:20",
+    "bangVang:21",
+    "vinhQuy:21",
+    "cho:21"
+  ],
+  "events": [
+    {
+      "t": "cho"
+    },
+    {
+      "t": "vong",
+      "vong": 0
+    },
+    {
+      "t": "doc",
+      "text": "Câu 1. \"Ta thà làm quỷ nước Nam chứ không thèm làm vương đất Bắc\" là câu nói của ai? A, Trần Quốc Toản. B, Trần Bình Trọng. C, Lý Thường Kiệt. D, Trần Hưng Đạo."
+    },
+    {
+      "t": "chot"
+    },
+    {
+      "t": "dapAn",
+      "chu": "B",
+      "dap": "Trần Bình Trọng",
+      "soDung": 8,
+      "soNop": 9,
+      "nhanh": "AN",
+      "msNhanh": 500
+    },
+    {
+      "t": "thach"
+    },
+    {
+      "t": "doc",
+      "text": "Câu 2. Dân ca quan họ gắn với vùng đất nào? A, Nam Bộ. B, Nghệ Tĩnh. C, Tây Nguyên. D, Kinh Bắc."
+    },
+    {
+      "t": "chot"
+    },
+    {
+      "t": "dapAn",
+      "chu": "D",
+      "dap": "Kinh Bắc",
+      "soDung": 7,
+      "soNop": 9,
+      "nhanh": "AN",
+      "msNhanh": 500
+    },
+    {
+      "t": "doc",
+      "text": "Câu 3. 44 trừ 29 bằng bao nhiêu? A, 14. B, 15. C, 5. D, 51."
+    },
+    {
+      "t": "chot"
+    },
+    {
+      "t": "dauBang",
+      "name": "TIE1"
+    },
+    {
+      "t": "dapAn",
+      "chu": "B",
+      "dap": "15",
+      "soDung": 7,
+      "soNop": 9,
+      "nhanh": "BINH",
+      "msNhanh": 1500
+    },
+    {
+      "t": "doc",
+      "text": "Câu 4. \"Đây thôn Vĩ Dạ\" là bài thơ của ai? A, Nguyễn Bính. B, Xuân Diệu. C, Hàn Mặc Tử. D, Lưu Trọng Lư."
+    },
+    {
+      "t": "chot"
+    },
+    {
+      "t": "dapAn",
+      "chu": "C",
+      "dap": "Hàn Mặc Tử",
+      "soDung": 5,
+      "soNop": 7,
+      "nhanh": "AN",
+      "msNhanh": 1000
+    },
+    {
+      "t": "thach"
+    },
+    {
+      "t": "doc",
+      "text": "Câu 5. Cột thu lôi trên các tòa nhà cao dùng để làm gì? A, Chống sét. B, Đo sức gió. C, Thu sóng tivi. D, Chống bão."
+    },
+    {
+      "t": "chot"
+    },
+    {
+      "t": "dapAn",
+      "chu": "A",
+      "dap": "Chống sét",
+      "soDung": 6,
+      "soNop": 9,
+      "nhanh": "AN",
+      "msNhanh": 1000
+    },
+    {
+      "t": "bangVang",
+      "vong": "Khảo hạch trường làng",
+      "dau": "TIE1"
+    },
+    {
+      "t": "vong",
+      "vong": 1
+    },
+    {
+      "t": "thach"
+    },
+    {
+      "t": "doc",
+      "text": "Câu 6. Trâu, bò ợ thức ăn lên nhai lần nữa nên được gọi là động vật gì? A, Ăn sâu bọ. B, Nhai lại. C, Gặm nhấm. D, Ăn tạp."
+    },
+    {
+      "t": "nhac"
+    },
+    {
+      "t": "chot"
+    },
+    {
+      "t": "mienKem",
+      "mien": "bac"
+    },
+    {
+      "t": "dapAn",
+      "chu": "B",
+      "dap": "Nhai lại",
+      "soDung": 6,
+      "soNop": 9,
+      "nhanh": "BINH",
+      "msNhanh": 1500
+    },
+    {
+      "t": "thach"
+    },
+    {
+      "t": "doc",
+      "text": "Câu 7. Ống dẫn nước tiểu từ thận xuống bàng quang gọi là gì? A, Thực quản. B, Niệu đạo. C, Khí quản. D, Niệu quản."
+    },
+    {
+      "t": "doc",
+      "text": "Câu 8. 14 nhân 5 bằng bao nhiêu? A, 70. B, 80. C, 71. D, 69."
+    },
+    {
+      "t": "nhac"
+    },
+    {
+      "t": "chot"
+    },
+    {
+      "t": "dapAn",
+      "chu": "A",
+      "dap": "70",
+      "soDung": 6,
+      "soNop": 9,
+      "nhanh": "AN",
+      "msNhanh": 1500
+    },
+    {
+      "t": "doc",
+      "text": "Câu 9. Tôn Ngộ Không bị đè dưới ngọn núi nào? A, Thái Sơn. B, Ngũ Hành Sơn. C, Nga Mi Sơn. D, Hoa Quả Sơn."
+    },
+    {
+      "t": "nhac"
+    },
+    {
+      "t": "chot"
+    },
+    {
+      "t": "dapAn",
+      "chu": "B",
+      "dap": "Ngũ Hành Sơn",
+      "soDung": 6,
+      "soNop": 9,
+      "nhanh": "BINH",
+      "msNhanh": 2000
+    },
+    {
+      "t": "thach"
+    },
+    {
+      "t": "doc",
+      "text": "Câu 10. Nhỏ dung dịch axit lên giấy quỳ tím, giấy chuyển sang màu gì? A, Màu xanh. B, Màu đỏ. C, Màu vàng. D, Màu đen."
+    },
+    {
+      "t": "nhac"
+    },
+    {
+      "t": "chot"
+    },
+    {
+      "t": "dapAn",
+      "chu": "B",
+      "dap": "Màu đỏ",
+      "soDung": 7,
+      "soNop": 9,
+      "nhanh": "AN",
+      "msNhanh": 1500
+    },
+    {
+      "t": "bangVang",
+      "vong": "Thi Hương",
+      "dau": "TIE1"
+    },
+    {
+      "t": "vong",
+      "vong": 2
+    },
+    {
+      "t": "doc",
+      "text": "Câu 11. Trong hệ mạch, huyết áp lớn nhất ở đâu? A, Động mạch chủ. B, Mao mạch. C, Tĩnh mạch chủ. D, Tĩnh mạch phổi."
+    },
+    {
+      "t": "nhac"
+    },
+    {
+      "t": "chot"
+    },
+    {
+      "t": "dapAn",
+      "chu": "A",
+      "dap": "Động mạch chủ",
+      "soDung": 5,
+      "soNop": 7,
+      "nhanh": "AN",
+      "msNhanh": 1500
+    },
+    {
+      "t": "thach"
+    },
+    {
+      "t": "doc",
+      "text": "Câu 12. Năm 1877, Thomas Edison phát minh ra thiết bị nào ghi và phát lại âm thanh? A, Máy điện báo. B, Máy hát. C, Máy thu thanh. D, Loa điện."
+    },
+    {
+      "t": "nhac"
+    },
+    {
+      "t": "chot"
+    },
+    {
+      "t": "mienKem",
+      "mien": "bac"
+    },
+    {
+      "t": "dapAn",
+      "chu": "B",
+      "dap": "Máy hát",
+      "soDung": 7,
+      "soNop": 9,
+      "nhanh": "BINH",
+      "msNhanh": 2500
+    },
+    {
+      "t": "doc",
+      "text": "Câu 13. 160 chia 8 bằng bao nhiêu? A, 20. B, 30. C, 21. D, 10."
+    },
+    {
+      "t": "nhac"
+    },
+    {
+      "t": "chot"
+    },
+    {
+      "t": "dapAn",
+      "chu": "A",
+      "dap": "20",
+      "soDung": 8,
+      "soNop": 9,
+      "nhanh": "AN",
+      "msNhanh": 2000
+    },
+    {
+      "t": "thach"
+    },
+    {
+      "t": "doc",
+      "text": "Câu 14. Mozart sinh ra ở thành phố nào? A, Munich. B, Viên. C, Salzburg. D, Praha."
+    },
+    {
+      "t": "nhac"
+    },
+    {
+      "t": "chot"
+    },
+    {
+      "t": "dapAn",
+      "chu": "C",
+      "dap": "Salzburg",
+      "soDung": 6,
+      "soNop": 8,
+      "nhanh": "CHI",
+      "msNhanh": 3500
+    },
+    {
+      "t": "doc",
+      "text": "Câu 15. Nguyễn Trãi dâng Lê Lợi bản kế sách đánh quân Minh tên là gì? A, Binh thư yếu lược. B, Hổ trướng khu cơ. C, Bình Ngô sách. D, Bình Ngô đại cáo."
+    },
+    {
+      "t": "nhac"
+    },
+    {
+      "t": "chot"
+    },
+    {
+      "t": "dapAn",
+      "chu": "C",
+      "dap": "Bình Ngô sách",
+      "soDung": 6,
+      "soNop": 9,
+      "nhanh": "BINH",
+      "msNhanh": 3000
+    },
+    {
+      "t": "bangVang",
+      "vong": "Thi Hội",
+      "dau": "TIE1"
+    },
+    {
+      "t": "vong",
+      "vong": 3
+    },
+    {
+      "t": "doc",
+      "text": "Câu 16. Nhân vật Raskolnikov xuất hiện trong tiểu thuyết nào? A, Tội ác và hình phạt. B, Chiến tranh và hòa bình. C, Những linh hồn chết. D, Anh em Karamazov."
+    },
+    {
+      "t": "cuuTro"
+    },
+    {
+      "t": "nhac"
+    },
+    {
+      "t": "chot"
+    },
+    {
+      "t": "dapAn",
+      "chu": "A",
+      "dap": "Tội ác và hình phạt",
+      "soDung": 7,
+      "soNop": 9,
+      "nhanh": "AN",
+      "msNhanh": 2500
+    },
+    {
+      "t": "doc",
+      "text": "Câu 17. Hồ Nguyên Trừng nổi tiếng với việc chế tạo loại vũ khí nào? A, Nỏ liên châu. B, Máy bắn đá. C, Súng thần cơ. D, Hỏa hổ."
+    },
+    {
+      "t": "cuuTro"
+    },
+    {
+      "t": "nhac"
+    },
+    {
+      "t": "chot"
+    },
+    {
+      "t": "dapAn",
+      "chu": "C",
+      "dap": "Súng thần cơ",
+      "soDung": 6,
+      "soNop": 9,
+      "nhanh": "AN",
+      "msNhanh": 2500
+    },
+    {
+      "t": "doc",
+      "text": "Câu 18. 60 trừ 39 rồi nhân 6 bằng bao nhiêu? A, 136. B, 126. C, 125. D, 127."
+    },
+    {
+      "t": "cuuTro"
+    },
+    {
+      "t": "nhac"
+    },
+    {
+      "t": "chot"
+    },
+    {
+      "t": "dapAn",
+      "chu": "B",
+      "dap": "126",
+      "soDung": 4,
+      "soNop": 7,
+      "nhanh": "CHI",
+      "msNhanh": 4000
+    },
+    {
+      "t": "thach"
+    },
+    {
+      "t": "doc",
+      "text": "Câu 19. Tôi là cháu ngoại của bà Năm. Mẹ tôi là gì của bà Năm? A, Con dâu. B, Con gái. C, Em gái. D, Cháu gái."
+    },
+    {
+      "t": "cuuTro"
+    },
+    {
+      "t": "nhac"
+    },
+    {
+      "t": "chot"
+    },
+    {
+      "t": "dapAn",
+      "chu": "B",
+      "dap": "Con gái",
+      "soDung": 7,
+      "soNop": 9,
+      "nhanh": "AN",
+      "msNhanh": 2500
+    },
+    {
+      "t": "latKeo"
+    },
+    {
+      "t": "doc",
+      "text": "Câu 20. Đang đứng thứ 4, bạn vượt 2 người rồi bị 1 người vượt lại. Giờ bạn đứng thứ mấy? A, Thứ ba. B, Thứ hai. C, Thứ năm. D, Thứ tư."
+    },
+    {
+      "t": "cuuTro"
+    },
+    {
+      "t": "nhac"
+    },
+    {
+      "t": "chot"
+    },
+    {
+      "t": "mienKem",
+      "mien": "nam"
+    },
+    {
+      "t": "dapAn",
+      "chu": "A",
+      "dap": "Thứ ba",
+      "soDung": 6,
+      "soNop": 9,
+      "nhanh": "AN",
+      "msNhanh": 3000
+    },
+    {
+      "t": "bangVang",
+      "vong": "Thi Đình",
+      "dau": "TIE1"
+    },
+    {
+      "t": "vinhQuy",
+      "top": [
+        "TIE1",
+        "TIE2",
+        "AN"
+      ],
+      "mien": {
+        "mien": "bac",
+        "diem": 2905
+      }
+    },
+    {
+      "t": "cho"
+    }
+  ],
+  "ranking": [
+    {
+      "hang": 1,
+      "id": "tie1",
+      "diem": 4351,
+      "danhHieu": "Trạng Nguyên",
+      "gioi": "nu",
+      "mien": null,
+      "chuoi": 2
+    },
+    {
+      "hang": 2,
+      "id": "tie2",
+      "diem": 4351,
+      "danhHieu": "Bảng Nhãn",
+      "gioi": "nam",
+      "mien": null,
+      "chuoi": 2
+    },
+    {
+      "hang": 3,
+      "id": "an",
+      "diem": 2905,
+      "danhHieu": "Thám Hoa",
+      "gioi": "nu",
+      "mien": "bac",
+      "chuoi": 2
+    },
+    {
+      "hang": 4,
+      "id": "dung",
+      "diem": 2585,
+      "danhHieu": "Tiến sĩ",
+      "gioi": "nam",
+      "mien": null,
+      "chuoi": 1
+    },
+    {
+      "hang": 5,
+      "id": "chi",
+      "diem": 2501,
+      "danhHieu": "Tiến sĩ",
+      "gioi": "nu",
+      "mien": "trung",
+      "chuoi": 1
+    },
+    {
+      "hang": 6,
+      "id": "giang",
+      "diem": 2205,
+      "danhHieu": "Tiến sĩ",
+      "gioi": "nam",
+      "mien": null,
+      "chuoi": 2
+    },
+    {
+      "hang": 7,
+      "id": "phuc",
+      "diem": 1842,
+      "danhHieu": "Tiến sĩ",
+      "gioi": "nam",
+      "mien": null,
+      "chuoi": 0
+    },
+    {
+      "hang": 8,
+      "id": "hoa",
+      "diem": 1620,
+      "danhHieu": "Tiến sĩ",
+      "gioi": "nu",
+      "mien": null,
+      "chuoi": 0
+    },
+    {
+      "hang": 9,
+      "id": "binh",
+      "diem": 1427,
+      "danhHieu": "Tiến sĩ",
+      "gioi": "nu",
+      "mien": "nam",
+      "chuoi": 0
+    },
+    {
+      "hang": 10,
+      "id": "em",
+      "diem": 1079,
+      "danhHieu": "Tiến sĩ",
+      "gioi": "nam",
+      "mien": null,
+      "chuoi": 0
+    }
+  ],
+  "scores": [
+    {
+      "id": "an",
+      "diem": 2905,
+      "chuoi": 2,
+      "msDung": 20000
+    },
+    {
+      "id": "binh",
+      "diem": 1427,
+      "chuoi": 0,
+      "msDung": 22500
+    },
+    {
+      "id": "chi",
+      "diem": 2501,
+      "chuoi": 1,
+      "msDung": 33500
+    },
+    {
+      "id": "dung",
+      "diem": 2585,
+      "chuoi": 1,
+      "msDung": 41000
+    },
+    {
+      "id": "em",
+      "diem": 1079,
+      "chuoi": 0,
+      "msDung": 43500
+    },
+    {
+      "id": "giang",
+      "diem": 2205,
+      "chuoi": 2,
+      "msDung": 63500
+    },
+    {
+      "id": "hoa",
+      "diem": 1620,
+      "chuoi": 0,
+      "msDung": 78000
+    },
+    {
+      "id": "phuc",
+      "diem": 1842,
+      "chuoi": 0,
+      "msDung": 56000
+    },
+    {
+      "id": "tie1",
+      "diem": 4351,
+      "chuoi": 2,
+      "msDung": 115500
+    },
+    {
+      "id": "tie2",
+      "diem": 4351,
+      "chuoi": 2,
+      "msDung": 115500
+    }
+  ],
+  "diemMien": {
+    "bac": {
+      "diem": 2905,
+      "nguoi": 1
+    },
+    "trung": {
+      "diem": 2501,
+      "nguoi": 1
+    },
+    "nam": {
+      "diem": 1427,
+      "nguoi": 1
+    }
+  },
+  "used": 16
+}
