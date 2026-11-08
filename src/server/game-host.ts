@@ -6,6 +6,7 @@ import type { GameMode, ModeRunner, SavedRound } from './hosted-mode';
 import { extraRunners } from './mode-runners';
 import { LOAI } from '../game/elimination-config';
 import { ROOT } from './store';
+import { DEFAULT_THEME, THEMES, isThemeId, type ThemeId } from '../game/themes';
 import { loadRoom, saveRoom } from './room-store';
 import { SpeechDirector } from './speech-director';
 import { SpokenQueue } from './spoken-queue';
@@ -35,6 +36,10 @@ export interface HostDeps {
   /** Called when the operator changes the mode or the player cap, so it is remembered after a restart */
   saveMode?: (mode: GameMode) => void;
   saveMaxNguoi?: (n: number) => void;
+  /** Theme the operator chose last time, how to load a theme's question bank, and how to remember a change */
+  initialTheme?: ThemeId;
+  loadBank?: (theme: ThemeId) => McQ[];
+  saveTheme?: (theme: ThemeId) => void;
 }
 
 const SAVE_EVERY_MS = 5000;
@@ -50,9 +55,11 @@ export class GameHost {
   private lastSave = 0;
   private savedPhase = '';
   private maxNguoi: number;
+  private themeId: ThemeId;
 
   constructor(private d: HostDeps) {
     this.maxNguoi = d.initialMaxNguoi ?? LOAI.maxNguoi;
+    this.themeId = d.initialTheme ?? DEFAULT_THEME;
     this.room = new KyThi(d.bank, d.used, d.rand);
     this.voice = new SpokenQueue(d.emit, d.stageCount, d.now);
     const director = new SpeechDirector({
@@ -100,6 +107,23 @@ export class GameHost {
 
   get mode() {
     return this.activeName;
+  }
+
+  get theme() {
+    return this.themeId;
+  }
+
+  /** Switch theme: the questions come from that theme's pack. Only while the active mode is waiting for a game (or with `force`). */
+  setTheme(theme: ThemeId, force = false) {
+    if (theme === this.themeId) return true;
+    if (!force && this.active.engine.phase !== 'cho') return false;
+    if (this.d.loadBank) {
+      const bank = this.d.loadBank(theme);
+      for (const r of this.runners.values()) r.engine.setBank(bank);
+    }
+    this.themeId = theme;
+    this.d.saveTheme?.(theme);
+    return true;
   }
 
   /** Player cap of the elimination mode */
@@ -180,6 +204,11 @@ export class GameHost {
       if (mode === 'exam' || mode === 'elimination') this.setMode(mode);
       return;
     }
+    if (action === 'custom' && text?.startsWith('theme:')) {
+      const theme = text.slice(6);
+      if (isThemeId(theme)) this.setTheme(theme);
+      return;
+    }
     if (action === 'custom' && text?.startsWith('cap:')) {
       const n = Number(text.slice(4));
       if (Number.isInteger(n) && n >= 2 && n <= 500) {
@@ -195,14 +224,29 @@ export class GameHost {
   }
 }
 
-/** The question bank: every src/game/questions/*.txt in file name order */
-export function loadBank(): McQ[] {
-  const dir = path.join(ROOT, 'src', 'game', 'questions');
+/** Every .txt file directly inside `dir`, in file name order (a missing folder gives nothing) */
+function readPack(dir: string): McQ[] {
+  if (!fs.existsSync(dir)) return [];
   return fs
     .readdirSync(dir)
     .filter((f) => f.endsWith('.txt'))
     .sort()
     .flatMap((f) => parseMc(fs.readFileSync(path.join(dir, f), 'utf8')));
+}
+
+/**
+ * The question bank for a theme: its own pack (src/game/questions/<questionPack>/*.txt) when the theme names one
+ * and the folder has questions, otherwise the general bank (src/game/questions/*.txt).
+ */
+export function loadBank(theme: ThemeId = DEFAULT_THEME): McQ[] {
+  const root = path.join(ROOT, 'src', 'game', 'questions');
+  const pack = (THEMES[theme] as { questionPack?: string }).questionPack;
+  if (pack) {
+    const own = readPack(path.join(root, pack));
+    if (own.length) return own;
+    console.warn(`Chủ đề "${theme}": thư mục câu hỏi "${pack}" chưa có câu nào, dùng bộ câu hỏi chung.`);
+  }
+  return readPack(root);
 }
 
 export interface HostWiring {
@@ -211,13 +255,18 @@ export interface HostWiring {
   channelName: () => string;
   initialMode?: GameMode;
   initialMaxNguoi?: number;
+  initialTheme?: ThemeId;
   saveMode?: (mode: GameMode) => void;
   saveMaxNguoi?: (n: number) => void;
+  saveTheme?: (theme: ThemeId) => void;
 }
 
 export function registerGameHost(app: Express, w: HostWiring) {
   const host = new GameHost({
-    bank: loadBank(),
+    bank: loadBank(w.initialTheme),
+    loadBank,
+    initialTheme: w.initialTheme,
+    saveTheme: w.saveTheme,
     now: Date.now,
     rand: Math.random,
     speechRand: Math.random,
@@ -245,7 +294,7 @@ export function registerGameHost(app: Express, w: HostWiring) {
   setInterval(() => host.tick(), 250);
 
   // Which mode is running, for the control page
-  app.get('/api/game/mode', (_req, res) => res.json({ mode: host.mode, maxNguoi: host.cap }));
+  app.get('/api/game/mode', (_req, res) => res.json({ mode: host.mode, maxNguoi: host.cap, theme: host.theme }));
 
   // The stage page tells us a line has been played (or failed to play)
   app.post('/api/game/spoken', (req, res) => {

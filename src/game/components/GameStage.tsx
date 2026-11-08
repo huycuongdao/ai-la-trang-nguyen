@@ -378,7 +378,7 @@ function DapAn({ v }: { v: View }) {
 }
 
 /** Dải dưới chân bảng đen: cách chơi, số người đã nộp, tên vừa nộp */
-function DongNhac({ v }: { v: View }) {
+export function DongNhac({ v, box = { left: 432, top: 868, width: 430 } }: { v: View; box?: { left: number; top: number; width: number } }) {
   const kq = v.ketQua;
   const noi = kq
     ? kq.soDung > 0 ? `✅ ${kq.soDung} người đúng · nhanh nhất ${kq.nhanh[0].name} ${(kq.nhanh[0].ms / 1000).toFixed(2).replace('.', ',')}s` : '😮 Chưa ai đúng câu này'
@@ -386,18 +386,18 @@ function DongNhac({ v }: { v: View }) {
     ? `📜 ${v.recent.length ? `${v.recent.slice(0, 3).join(', ')} vừa nộp · ` : ''}${v.soNop} sĩ tử đã nộp`
     : 'Gõ A, B, C, D trả lời · Bắc, Trung, Nam chọn phe';
   return (
-    <div className="absolute flex items-center justify-center" style={{ left: 432, top: 868, width: 430, height: 46, zIndex: 1700 }}>
+    <div className="absolute flex items-center justify-center" style={{ ...box, height: 46, zIndex: 1700 }}>
       <div className="max-w-full truncate rounded-full border-2 px-4 text-[21px] font-bold leading-[40px]" style={{ background: PANEL, borderColor: GOLD }}>{noi}</div>
     </div>
   );
 }
 
 /** Thi Đình: cả phòng thả tim, đủ thì ông đồ loại 2 đáp án sai */
-function CuuTro({ v }: { v: View }) {
+export function CuuTro({ v, box = { left: 432, top: 868, width: 428 } }: { v: View; box?: { left: number; top: number; width: number } }) {
   const c = v.cuu!;
   const xong = c.loai.length > 0;
   return (
-    <div className="absolute flex items-center gap-3 rounded-full border-2 px-5" style={{ left: 432, top: 868, width: 428, height: 46, zIndex: 1700, background: PANEL, borderColor: GOLD }}>
+    <div className="absolute flex items-center gap-3 rounded-full border-2 px-5" style={{ ...box, height: 46, zIndex: 1700, background: PANEL, borderColor: GOLD }}>
       <span className="shrink-0 text-[22px] font-bold">{xong ? '✂️ Đã loại 2 câu sai!' : '❤️ Thả tim cứu trợ'}</span>
       <div className="h-4 flex-1 overflow-hidden rounded-full bg-black/40">
         <motion.div className="h-full rounded-full" style={{ background: xong ? 'linear-gradient(90deg,#2f7d3a,#7dff9a)' : 'linear-gradient(90deg,#c8102e,#ff6f91)' }} animate={{ width: `${(c.tim / c.can) * 100}%` }} />
@@ -503,8 +503,8 @@ function Dong({ h, big, sang }: { h: Hang; big?: boolean; sang?: boolean }) {
 }
 
 /** Bảng vàng nhỏ treo dưới tán đa: top 5 lúc hỏi, top 10 (2 cột) lúc công bố; lúc chờ ván thì bảng vàng tuần */
-function BangNho({ v }: { v: View }) {
-  const box = { left: 90, top: 96, width: 900, height: 252, background: PANEL, borderColor: GOLD };
+export function BangNho({ v, pos = { left: 90, top: 96, width: 900, height: 252 } }: { v: View; pos?: { left: number; top: number; width: number; height: number } }) {
+  const box = { ...pos, background: PANEL, borderColor: GOLD };
   if (v.phase === 'cho' && v.tuan.length) {
     return (
       <div className="absolute rounded-[18px] border-[3px] px-5 py-2" style={box}>
@@ -582,7 +582,7 @@ export function BangQua({ v }: { v: Pick<View, 'qua'> }) {
 }
 
 /** Bảng vàng lớn trên tờ giấy dó: hết mỗi kỳ thi (top 20) và vinh quy (tam khôi + bảng) */
-function BangVang({ v }: { v: View }) {
+export function BangVang({ v }: { v: View }) {
   const vinh = v.phase === 'vinhQuy';
   const [tn, bn, th] = v.top;
   const rest = vinh ? v.top.slice(3, 11) : v.top;

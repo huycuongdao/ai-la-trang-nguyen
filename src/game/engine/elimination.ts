@@ -131,6 +131,11 @@ export class LoaiTru {
     private rand: () => number = Math.random,
   ) {}
 
+  /** Use another question bank from the next question on (the operator changed the theme while waiting for a game) */
+  setBank(bank: McQ[]) {
+    this.bank = bank;
+  }
+
   // ---------- phòng chờ ----------
 
   /** Mở phòng chờ. `choTim` = ván trước vừa xong: chờ đủ tim rồi mới đếm ngược đăng ký. */

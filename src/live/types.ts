@@ -67,5 +67,5 @@ export interface LiveHandlers {
   onControl?: (c: ControlCommand) => void;
   onView?: (v: any) => void; // ảnh chụp màn hình game do server gửi (4 lần / giây)
   onSay?: (s: SayEvent) => void; // lời ông đồ cần đọc (chỉ trang stage phát)
-  onCaiDat?: (c: { tieuDe: string; tenOngDo: string }) => void; // tên game, tên ông đồ (trang điều khiển sửa)
+  onCaiDat?: (c: { tieuDe: string; tenOngDo: string; theme: string }) => void; // tên game, tên ông đồ, chủ đề (trang điều khiển sửa)
 }

@@ -5,7 +5,9 @@ import path from 'node:path';
 
 const DIR = path.resolve(import.meta.dirname, '../src/game/questions');
 const LEVELS = ['de', 'vua', 'kho', 'dinh', 'meo'];
-const files = process.argv.slice(2).length ? process.argv.slice(2) : fs.readdirSync(DIR).filter((f) => f.endsWith('.txt')).map((f) => path.join(DIR, f));
+// Bộ câu hỏi chung (*.txt ngay trong thư mục) và bộ riêng của từng chủ đề (thư mục con, vd football/*.txt)
+const walk = (dir) => fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(dir, e.name)) : e.name.endsWith('.txt') ? [path.join(dir, e.name)] : []));
+const files = process.argv.slice(2).length ? process.argv.slice(2) : walk(DIR);
 const plain = (s) => s.normalize('NFD').replace(/\p{M}/gu, '').replace(/đ/gi, 'd').toLowerCase().replace(/[^a-z0-9]/g, '');
 // chữ tiếng Việt có dấu: câu không có chữ nào có dấu thì nghi là tiếng Anh
 const VI = /[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]/i;

@@ -270,4 +270,23 @@ function elimToReading() {
   assert.deepEqual(modes, ['exam']);
 }
 
+// ---- 8. Changing the theme swaps the question bank, only while a game is waiting, and is remembered ----
+{
+  const other: McQ[] = bank.slice(0, 5);
+  const loaded: string[] = [];
+  const saved: string[] = [];
+  const r = makeHost(bank, { extra: { initialTheme: 'dinh-lang', loadBank: (t) => (loaded.push(t), other), saveTheme: (t) => saved.push(t) } });
+  assert.equal(r.host.theme, 'dinh-lang');
+  r.host.command('custom', 'theme:nope'); // unknown theme: ignored
+  r.host.command('custom', 'theme:dinh-lang'); // same theme: nothing to do
+  assert.deepEqual([loaded, saved], [[], []]);
+  r.host.command('custom', 'batdau');
+  r.host.command('custom', 'theme:village-yard'); // a game is running: refused
+  assert.equal(r.host.theme, 'dinh-lang');
+  r.host.command('reset');
+  r.host.command('custom', 'theme:village-yard');
+  assert.equal(r.host.theme, 'village-yard');
+  assert.deepEqual([loaded, saved], [['village-yard'], ['village-yard']]);
+}
+
 console.log('game-host: OK');

@@ -21,6 +21,8 @@ export interface ModeEngine {
   /** The picture of the game for the pages (plain JSON) */
   view(now: number): object;
   snapshot(now: number): SavedRound;
+  /** Switch to another question bank (only called while waiting for a game) */
+  setBank(bank: McQ[]): void;
 }
 
 /** What the host needs from the master of ceremonies of a mode. */

@@ -147,6 +147,7 @@ Các file bạn hay sửa nhất đều mở được bằng Notepad. Sửa xong
   Đáp án đúng luôn để ở vị trí thứ hai, game tự xáo A B C D. Dòng `[de]`, `[vua]`, `[kho]`, `[dinh]`, `[meo]` là nhóm độ khó (khảo hạch, thi Hương, thi Hội, thi Đình, đố mẹo). Quy tắc viết câu có ở `src/game/questions/writing-guide.md`. Viết xong chạy `node tools/check-questions.mjs` để soát lỗi.
 - **Lời ông đồ, số liệu luật chơi**: `src/game/config.ts`. Mọi câu ông đồ nói, thời gian từng kỳ, điểm, số tim cứu trợ... đều ở đây.
 - **Ảnh**: nền ở `public/assets/background/village-yard.jpg` (1080 × 1920). Ảnh gốc (ông đồ, tam khôi, sĩ tử, trẻ con, các cụ, nền) để trong `art-source/village-yard/` (mỗi chủ đề một thư mục), ảnh đã tách nền dùng trong game ở `public/assets/characters/`. Thay ảnh gốc xong thì chạy `node tools/remove-background.mjs` (ông đồ, tam khôi) hoặc `node tools/cut-characters.mjs` (nhân vật sân thi) để tách nền trắng.
+- **Chủ đề giao diện**: chọn ở trang điều khiển (mặc định "Đình làng"). Thêm chủ đề mới: xem mục "Chủ đề giao diện" trong `CLAUDE.md` (ảnh gốc `art-source/<chủ đề>/`, `node tools/prepare-theme-art.mjs <chủ đề>`, skin trong `src/game/components/stage-skin/skins/`). Xem thử một chủ đề không đổi cài đặt: thêm `&theme=<chủ đề>` vào link stage.
 
 ## Gặp lỗi thì sao
 

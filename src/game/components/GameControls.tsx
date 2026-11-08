@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { emitTest, sendControl } from '../../live/utils/page';
 import { GAME } from '../config';
 import { LOAI } from '../elimination-config';
+import { THEMES, THEME_IDS, isThemeId, type ThemeId } from '../themes';
 
 const HO = ['Minh', 'Lan', 'Tuấn', 'Hoa', 'Long', 'Thảo', 'Nam', 'Vy', 'Khánh', 'An', 'Bình', 'Trang', 'Hùng', 'My', 'Phúc'];
 
@@ -41,11 +42,13 @@ function ModeControls() {
   const btn = 'rounded-xl px-4 py-2 font-semibold';
   const [mode, setMode] = useState<Mode | ''>('');
   const [cap, setCap] = useState(LOAI.maxNguoi);
+  const [theme, setTheme] = useState<ThemeId | ''>('');
   const [dang, setDang] = useState(false);
   const lam = () =>
     fetch('/api/game/mode').then((r) => r.json()).then((c) => {
       setMode(c.mode);
       if (typeof c.maxNguoi === 'number') setCap(c.maxNguoi);
+      if (isThemeId(c.theme)) setTheme(c.theme);
     }).catch(() => {});
   useEffect(() => {
     lam();
@@ -61,6 +64,15 @@ function ModeControls() {
     await lam();
     setDang(false);
   };
+  // đổi chủ đề giao diện (và bộ câu hỏi của chủ đề): cũng kết thúc ván đang chơi
+  const doiChuDe = async (t: ThemeId) => {
+    if (t === theme) return;
+    setDang(true);
+    await sendControl('reset');
+    await sendControl('custom', `theme:${t}`);
+    await lam();
+    setDang(false);
+  };
   const datCap = async (n: number) => {
     setCap(n);
     await sendControl('custom', `cap:${n}`);
@@ -72,6 +84,12 @@ function ModeControls() {
       <div className="flex flex-wrap gap-2">
         <button disabled={dang} className={`${btn} ${chon(mode === 'exam')}`} onClick={() => doi('exam')}>🏮 Thi Trạng Nguyên (20 câu)</button>
         <button disabled={dang} className={`${btn} ${chon(mode === 'elimination')}`} onClick={() => doi('elimination')}>⚔️ Loại trực tiếp</button>
+      </div>
+      <div className="text-sm text-white/60">Chủ đề giao diện (đổi sẽ kết thúc ván đang chơi, câu hỏi theo chủ đề):</div>
+      <div className="flex flex-wrap gap-2">
+        {THEME_IDS.map((t) => (
+          <button key={t} disabled={dang} className={`${btn} ${chon(theme === t)}`} onClick={() => doiChuDe(t)}>{THEMES[t].label}</button>
+        ))}
       </div>
       {mode === 'elimination' && (
         <>

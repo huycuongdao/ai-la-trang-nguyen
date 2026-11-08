@@ -211,6 +211,11 @@ export class KyThi {
     private rand: () => number = Math.random,
   ) {}
 
+  /** Use another question bank from the next question on (the operator changed the theme while waiting for a game) */
+  setBank(bank: McQ[]) {
+    this.bank = bank;
+  }
+
   /** Copy of the whole round state as plain JSON (see RoomSnapshot) */
   snapshot(now: number): RoomSnapshot {
     const copy = <T,>(x: T): T => JSON.parse(JSON.stringify(x));

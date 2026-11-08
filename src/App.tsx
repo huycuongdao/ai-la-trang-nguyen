@@ -5,8 +5,7 @@ import { Dashboard } from './live/components/Dashboard';
 import { voice } from './live/utils/voice';
 import { sfx } from './game/audio/sfx';
 import { useGame } from './game/hooks/useGame';
-import { GameStage } from './game/components/GameStage';
-import { EliminationStage } from './game/components/EliminationStage';
+import { STAGES } from './game/components/theme-stages';
 import { isElimView } from './game/engine/view-types';
 import type { GameState } from './game/hooks/useGame';
 import { GameControls } from './game/components/GameControls';
@@ -54,7 +53,9 @@ export default function App() {
   );
 }
 
-/** The picture depends on the mode the server is running */
+/** The picture depends on the theme (from the link, else the control page's choice) and on the mode the server is running */
 function GameScreen({ game }: { game: GameState }) {
-  return game.view && isElimView(game.view) ? <EliminationStage game={game} /> : <GameStage game={game} />;
+  const { theme } = useRole();
+  const stages = STAGES[theme ?? game.caiDat.theme];
+  return game.view && isElimView(game.view) ? <stages.Elimination game={game} /> : <stages.Exam game={game} />;
 }

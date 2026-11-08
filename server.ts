@@ -15,7 +15,7 @@ import { ROOT } from './src/server/store';
 import { migrateData } from './src/server/data-migration';
 import { httpGuard } from './src/server/http-guard';
 import { createSseHub } from './src/server/sse-hub';
-import { caiDat, lastControl, registerSettings, savedGameMode, savedMaxNguoi, savedTikTokUser, saveSettings } from './src/server/settings';
+import { caiDat, lastControl, registerSettings, savedGameMode, savedMaxNguoi, savedTheme, savedTikTokUser, saveSettings } from './src/server/settings';
 import { autoConnect, getLiveStats, registerTikTok } from './src/server/tiktok-connection';
 import { registerControlRoutes } from './src/server/control-routes';
 import { registerDataRoutes } from './src/server/weekly-board';
@@ -63,6 +63,8 @@ host = registerGameHost(app, {
   initialMaxNguoi: savedMaxNguoi(),
   saveMode: (mode) => saveSettings({ mode }),
   saveMaxNguoi: (maxNguoi) => saveSettings({ maxNguoi }),
+  initialTheme: savedTheme(),
+  saveTheme: (theme) => (saveSettings({ theme }), hub.broadcast('caiDat', caiDat())),
 });
 
 // ---------- Khởi động ----------

@@ -19,9 +19,13 @@ const EXPANDED = [
   ['/assets/characters/villagers/', ['back-male', 'back-female', 'child-boy', 'child-girl'], '.webp'],
 ];
 
+// Skins (src/game/components/stage-skin/skin.tsx) build their 14 picture paths from `artPaths('<theme>')`
+const SKIN_FILES = ['background', 'floor', 'pavilion', 'title-sign', 'host', 'gong-clock', 'question-sign', 'answer-frame', 'mat', 'avatar-ring', 'name-plate', 'avatar-male', 'avatar-female', 'cloud-border'];
+
 const wanted = new Set();
 for (const file of walk(path.join(ROOT, 'src')).filter((f) => /\.(ts|tsx|css)$/.test(f))) {
   const text = fs.readFileSync(file, 'utf8');
+  for (const m of text.matchAll(/artPaths\('([\w-]+)'\)/g)) for (const n of SKIN_FILES) wanted.add(`/assets/${m[1]}/${n}.webp`);
   for (const m of text.matchAll(/\/assets\/[A-Za-z0-9_\-./]+\.(?:webp|jpg|jpeg|png|svg|mp3)/g)) wanted.add(m[0]);
 }
 for (const [prefix, names, suffix] of EXPANDED) for (const n of names) wanted.add(`${prefix}${n}${suffix}`);
