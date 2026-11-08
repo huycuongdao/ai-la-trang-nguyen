@@ -19,7 +19,8 @@ export interface ReactionDeps {
   rand: () => number;
   channelName: () => string;
   /** Banter lines that replace the shared ones for this mode (some shared lines mention rules of another mode) */
-  treu?: Partial<typeof GAME.loi.treu>;
+  /** Lines that replace the general teasing lines (a function so a theme change is picked up) */
+  treu?: () => Partial<typeof GAME.loi.treu>;
 }
 
 /**
@@ -92,7 +93,7 @@ export class ViewerReactions {
   /** Quiet moment and the voice is free: say one queued banter line. `label` names the round for lines that mention it. */
   quiet(now: number, label: () => string) {
     const x = this.banter.lay(now);
-    const line = x && this.pick(this.d.treu?.[x.loai] ?? GAME.loi.treu[x.loai])?.(speakableName(x.name), label());
+    const line = x && this.pick(this.d.treu?.()[x.loai] ?? GAME.loi.treu[x.loai])?.(speakableName(x.name), label());
     if (line) this.d.voice.say(line);
   }
 }

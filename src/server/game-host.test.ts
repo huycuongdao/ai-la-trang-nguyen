@@ -287,6 +287,15 @@ function elimToReading() {
   r.host.command('custom', 'theme:village-yard');
   assert.equal(r.host.theme, 'village-yard');
   assert.deepEqual([loaded, saved], [['village-yard'], ['village-yard']]);
+  // the wording follows the theme: the football theme has its own round names, titles and host lines; the others keep the exam wording
+  assert.equal(GAME.danhHieu(1), 'Trạng Nguyên');
+  r.host.command('custom', 'theme:vua-khan-dai');
+  assert.equal(GAME.danhHieu(1), 'Vua Khán Đài');
+  assert.equal(GAME.vong[3].ten, 'Chung kết');
+  assert.ok(!JSON.stringify(GAME.loi.cho).includes('ông đồ'));
+  r.host.command('custom', 'theme:dinh-lang');
+  assert.equal(GAME.danhHieu(1), 'Trạng Nguyên');
+  assert.equal(GAME.vong[3].ten, 'Thi Đình');
 }
 
 console.log('game-host: OK');

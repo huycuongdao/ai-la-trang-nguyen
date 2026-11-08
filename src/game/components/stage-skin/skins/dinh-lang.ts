@@ -1,3 +1,4 @@
+import { DINH_KIT } from '../kits/dinh-lang';
 import { artPaths, type Skin } from '../skin';
 
 /** "Đình làng": pavilion, red wall with clouds, brick yard, woven mat. Art in art-source/dinh-lang. */
@@ -38,6 +39,9 @@ export const DINH_LANG: Skin = {
     answerText: [178, 30, 838, 158],
     avatarCircle: { cx: 252.5, cy: 260, d: 400 },
   },
+  seatCell: { nameMin: 84, named: { w: 1.5, h: 1.34, body: 1.34 }, plain: { w: 1.12, h: 1.1, body: 1 } },
   seatZone: { top: 0.12, bottom: 0.9, topL: 0.27, topR: 0.73, botL: 0.11, botR: 0.89 },
-  colors: { ink: '#4a1a0c', accent: '#8a1c0c', gold: '#d9a441', cream: '#fff1cc', panel: 'rgba(58,18,8,.84)' },
+  kit: DINH_KIT,
+  maxSeats: 12,
+  colors: { ink: '#4a1a0c', accent: '#8a1c0c', gold: '#d9a441', cream: '#fff1cc', good: '#1e6b2a', bad: '#b3200c', panel: 'rgba(58,18,8,.84)' },
 };

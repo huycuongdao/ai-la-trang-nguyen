@@ -33,7 +33,7 @@ export class EliminationDirector implements ModeDirector {
   private lastTimAsk = 0;
 
   constructor(private d: EliminationDirectorDeps) {
-    this.reactions = new ViewerReactions({ voice: d.voice, rand: d.rand, channelName: d.channelName, treu: LOAI.loi.treu });
+    this.reactions = new ViewerReactions({ voice: d.voice, rand: d.rand, channelName: d.channelName, treu: () => LOAI.loi.treu });
     this.pick = this.reactions.pick;
   }
 

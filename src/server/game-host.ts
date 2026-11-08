@@ -7,6 +7,7 @@ import { extraRunners } from './mode-runners';
 import { LOAI } from '../game/elimination-config';
 import { ROOT } from './store';
 import { DEFAULT_THEME, THEMES, isThemeId, type ThemeId } from '../game/themes';
+import { applyThemeWords } from '../game/theme-words';
 import { loadRoom, saveRoom } from './room-store';
 import { SpeechDirector } from './speech-director';
 import { SpokenQueue } from './spoken-queue';
@@ -60,6 +61,7 @@ export class GameHost {
   constructor(private d: HostDeps) {
     this.maxNguoi = d.initialMaxNguoi ?? LOAI.maxNguoi;
     this.themeId = d.initialTheme ?? DEFAULT_THEME;
+    applyThemeWords(this.themeId); // the host's spoken lines and the names of rounds and titles follow the theme
     this.room = new KyThi(d.bank, d.used, d.rand);
     this.voice = new SpokenQueue(d.emit, d.stageCount, d.now);
     const director = new SpeechDirector({
@@ -122,6 +124,9 @@ export class GameHost {
       for (const r of this.runners.values()) r.engine.setBank(bank);
     }
     this.themeId = theme;
+    applyThemeWords(theme);
+    const now = this.d.now();
+    for (const r of this.runners.values()) r.director.warmUp(now); // get the new lines' voices ready
     this.d.saveTheme?.(theme);
     return true;
   }

@@ -7,6 +7,7 @@ import { ExamStageSkinned } from './stage-skin/exam-stage';
 import { EliminationStageSkinned } from './stage-skin/elimination-stage';
 import { SkinProvider, type Skin } from './stage-skin/skin';
 import { DINH_LANG } from './stage-skin/skins/dinh-lang';
+import { VUA_KHAN_DAI } from './stage-skin/skins/vua-khan-dai';
 
 /** The two screens of a theme: one per game mode */
 export interface StageSet {
@@ -26,6 +27,7 @@ const skinned = (skin: Skin): StageSet => ({
  */
 export const STAGES: Record<ThemeId, StageSet> = {
   'dinh-lang': skinned(DINH_LANG),
+  'vua-khan-dai': skinned(VUA_KHAN_DAI),
   'village-yard': { Exam: GameStage, Elimination: EliminationStage },
 };
 

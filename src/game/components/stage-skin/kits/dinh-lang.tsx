@@ -1,19 +1,30 @@
 import { AnimatePresence, motion } from 'motion/react';
 import type { CSSProperties, ReactNode } from 'react';
-import { useSkin, type Skin } from './skin';
+import { MOVE, hashId, type Mood } from '../common';
+import { GiftBoard } from './gift-board';
+import { PlateBox } from './dinh-lang-panels';
+import { useSkin, type AnswerState, type HeaderProps, type Kit, type SeatProps, type Skin } from '../skin';
 
 /**
- * Building blocks shared by both game modes, drawn from the active skin (see skin.tsx).
+ * "Đình làng" kit: the look pieces of the 14-picture set made like art-source/dinh-lang, drawn from the active skin (see skin.tsx).
  * Screen is 1080x1920; leave 250px at the bottom and the right edge free for the TikTok interface.
  */
 
 /** Height of a picture drawn `w` wide, from the source picture's shape */
-const tall = (s: Skin, key: keyof Skin['size'], w: number) => (w * s.size[key][1]) / s.size[key][0];
+type DinhInset = {
+  questionText: readonly number[];
+  gongDisc: { cx: number; cy: number; d: number };
+  answerLetter: { x: number; y: number; d: number };
+  answerText: readonly number[];
+  avatarCircle: { cx: number; cy: number; d: number };
+};
+
+const tall = (s: Skin, key: string, w: number) => (w * s.size[key][1]) / s.size[key][0];
 
 // ---------------- scene ----------------
 
 /** Background, floor, clouds, pavilion and title sign: the same in every round */
-export function Scene() {
+function Scene() {
   const s = useSkin();
   const { pavilion: p, title: t, ground: g } = s.layout;
   return (
@@ -35,22 +46,7 @@ export function Scene() {
 
 // ---------------- host ----------------
 
-/** The host has one picture only: he shows his mood by moving (hop = happy, sway = sorry, breathe = thinking) */
-export type Mood = 'mung' | 'tiec' | 'nghi';
-
-export function moodOf(v: { phase: string; ketQua: { soDung: number } | null }): Mood {
-  if (v.phase === 'vinhQuy' || v.phase === 'vinhDanh') return 'mung';
-  if (v.phase === 'dapAn') return v.ketQua?.soDung ? 'mung' : 'tiec';
-  return 'nghi';
-}
-
-const MOVE: Record<Mood, { animate: Record<string, number[]>; transition: object }> = {
-  mung: { animate: { y: [0, -18, 0] }, transition: { duration: 0.55, repeat: Infinity, ease: 'easeOut' } },
-  tiec: { animate: { rotate: [-1.8, 1.8, -1.8] }, transition: { duration: 1.6, repeat: Infinity, ease: 'easeInOut' } },
-  nghi: { animate: { scale: [1, 1.012, 1] }, transition: { duration: 3.2, repeat: Infinity, ease: 'easeInOut' } },
-};
-
-export function Host({ mood, ten }: { mood: Mood; ten: string }) {
+function Host({ mood, ten }: { mood: Mood; ten: string }) {
   const s = useSkin();
   const { x, y, h: ht } = s.layout.host;
   const m = MOVE[mood];
@@ -77,11 +73,11 @@ export function Host({ mood, ten }: { mood: Mood; ten: string }) {
 // ---------------- question sign, clock, answer frames ----------------
 
 /** The question sign hung in front of the pavilion; `children` sit inside its writable area */
-export function QuestionSign({ children, style }: { children: ReactNode; style?: CSSProperties }) {
+function QuestionSign({ children, style }: { children: ReactNode; style?: CSSProperties }) {
   const s = useSkin();
   const q = s.layout.question;
   const k = q.w / s.size.questionSign[0];
-  const [l, t, r, b] = s.inset.questionText;
+  const [l, t, r, b] = (s.inset as DinhInset).questionText;
   return (
     <div className="absolute" style={{ left: q.x, top: q.y, width: q.w, height: tall(s, 'questionSign', q.w), zIndex: 20 }}>
       <img src={s.art.questionSign} className="absolute inset-0 h-full w-full" style={{ filter: 'drop-shadow(0 10px 10px rgba(30,6,2,.5))' }} draggable={false} />
@@ -93,11 +89,12 @@ export function QuestionSign({ children, style }: { children: ReactNode; style?:
 }
 
 /** Clock with the countdown number on its face */
-export function GongClock({ value, low }: { value: number | null; low?: boolean }) {
+function GongClock({ value, low }: { value: number | null; total: number; low?: boolean }) {
   const s = useSkin();
   const g = s.layout.gong;
   const k = g.w / s.size.gongClock[0];
-  const d = s.inset.gongDisc.d * k;
+  const disc = (s.inset as DinhInset).gongDisc;
+  const d = disc.d * k;
   return (
     <div className="absolute" style={{ left: g.x, top: g.y, width: g.w, height: tall(s, 'gongClock', g.w), zIndex: 25 }}>
       <img src={s.art.gongClock} className="absolute inset-0 h-full w-full" style={{ filter: 'drop-shadow(0 10px 10px rgba(30,6,2,.5))' }} draggable={false} />
@@ -108,7 +105,7 @@ export function GongClock({ value, low }: { value: number | null; low?: boolean 
           animate={{ scale: 1, opacity: 1 }}
           transition={low ? { type: 'spring', stiffness: 500, damping: 14 } : undefined}
           className="absolute flex items-center justify-center rounded-full font-extrabold tabular-nums leading-none"
-          style={{ left: s.inset.gongDisc.cx * k - d / 2, top: s.inset.gongDisc.cy * k - d / 2, width: d, height: d, fontSize: d * 0.62, color: low ? '#c8102e' : s.colors.ink }}
+          style={{ left: disc.cx * k - d / 2, top: disc.cy * k - d / 2, width: d, height: d, fontSize: d * 0.62, color: low ? '#c8102e' : s.colors.ink }}
         >
           {value}
         </motion.div>
@@ -117,15 +114,13 @@ export function GongClock({ value, low }: { value: number | null; low?: boolean 
   );
 }
 
-export type AnswerState = { right: boolean; dim: boolean; wiped: boolean };
-
 /** Answer frame: the letter in its circle on the left, the answer on the paper. `index` 0-3 */
-export function AnswerFrame({ index, delay, state, children }: { index: number; delay: number; state: AnswerState; children: ReactNode }) {
+function AnswerFrame({ index, delay, state, children }: { index: number; delay: number; state: AnswerState; len: number; children: ReactNode }) {
   const s = useSkin();
   const a = s.layout.answers;
   const ht = tall(s, 'answerFrame', a.w);
   const k = a.w / s.size.answerFrame[0];
-  const { answerLetter: L, answerText: T } = s.inset;
+  const { answerLetter: L, answerText: T } = s.inset as DinhInset;
   return (
     <motion.div
       initial={{ opacity: 0, y: 14 }}
@@ -150,7 +145,7 @@ export function AnswerFrame({ index, delay, state, children }: { index: number; 
 // ---------------- mat and seats ----------------
 
 /** The mat the players sit on: the picture stretched over the mat box; `children` use the mat's top-left corner as origin */
-export function Mat({ children }: { children: ReactNode }) {
+function Mat({ children }: { children: ReactNode }) {
   const s = useSkin();
   const m = s.layout.mat;
   return (
@@ -161,65 +156,12 @@ export function Mat({ children }: { children: ReactNode }) {
   );
 }
 
-const NAME_MIN = 84; // smaller pictures get no name (the text would be too small on a phone)
-
-export interface Seats {
-  size: number;
-  ten: boolean;
-  pos: { x: number; y: number }[]; // top-left of each picture, relative to the mat
-}
-
-/**
- * Seat n people: the biggest picture size that still fits, every row inside the mat's trapezoid
- * (the near rows hold more people). Names are shown when the pictures are big enough.
- */
-export function layoutSeats(s: Skin, n: number, maxSize = 150): Seats {
-  const { w, h: H } = s.layout.mat;
-  const Z = s.seatZone;
-  for (const ten of [true, false]) {
-    for (let size = maxSize; size >= 34; size -= 2) {
-      if (ten && size < NAME_MIN) break;
-      const cw = size * (ten ? 1.5 : 1.12);
-      const ch = size * (ten ? 1.34 : 1.1);
-      const y0 = H * Z.top;
-      const span = H * (Z.bottom - Z.top);
-      const rows = Math.floor(span / ch);
-      if (rows < 1) continue;
-      const cap = Array.from({ length: rows }, (_, r) => {
-        const t = (ch * r + ch / 2) / span;
-        const half = ((Z.topR - Z.topL) / 2 + t * ((Z.botR - Z.botL) / 2 - (Z.topR - Z.topL) / 2)) * w;
-        return Math.max(0, Math.floor((half * 2) / cw));
-      });
-      const total = cap.reduce((a, b) => a + b, 0);
-      if (total < n) continue;
-      // share people by row capacity; the first people in the list sit in the upper rows
-      const count = cap.map((c) => Math.floor((n * c) / total));
-      let left = n - count.reduce((a, b) => a + b, 0);
-      for (let r = rows - 1; left > 0; r = (r - 1 + rows) % rows) if (count[r] < cap[r]) (count[r]++, left--);
-      const slack = Math.max(0, span - count.filter((c) => c > 0).length * ch) / 2;
-      const pos: Seats['pos'] = [];
-      let usedRow = 0;
-      for (const c of count) {
-        if (!c) continue;
-        const y = y0 + slack + usedRow * ch + (ch - size * (ten ? 1.34 : 1)) / 2;
-        usedRow++;
-        for (let k = 0; k < c; k++) pos.push({ x: w / 2 + (k - (c - 1) / 2) * cw - size / 2, y });
-      }
-      return { size, ten, pos };
-    }
-  }
-  return { size: 34, ten: false, pos: [] };
-}
-
-/** A fixed number from an account id (a player with no photo always gets the same sample picture) */
-export const hashId = (id: string) => [...id].reduce((n, c) => (n * 31 + c.charCodeAt(0)) >>> 0, 7);
-
 /** TikTok photo inside the ring; no photo = the male / female sample picture */
-export function RingAvatar({ avatar, gioi, id, size }: { avatar: string; gioi?: 'nam' | 'nu'; id: string; size: number }) {
+function RingAvatar({ avatar, gioi, id, size }: { avatar: string; gioi?: 'nam' | 'nu'; id: string; size: number }) {
   const s = useSkin();
   const nu = gioi ? gioi === 'nu' : hashId(id) % 2 === 1;
   const [rw, rh] = s.size.avatarRing;
-  const c = s.inset.avatarCircle;
+  const c = (s.inset as DinhInset).avatarCircle;
   const d = (c.d / rw) * size;
   return (
     <div className="relative shrink-0" style={{ width: size, height: size }}>
@@ -232,7 +174,7 @@ export function RingAvatar({ avatar, gioi, id, size }: { avatar: string; gioi?: 
 }
 
 /** Name plate: the text shrinks to fit */
-export function NamePlate({ name, w, gold, extra }: { name: string; w: number; gold?: boolean; extra?: ReactNode }) {
+function NamePlate({ name, w, gold, extra }: { name: string; w: number; gold?: boolean; extra?: ReactNode }) {
   const s = useSkin();
   const ht = tall(s, 'namePlate', w);
   const chars = [...name].length + (extra ? 2 : 0);
@@ -249,12 +191,7 @@ export function NamePlate({ name, w, gold, extra }: { name: string; w: number; g
 }
 
 /** One person on the mat: ring photo, name plate (when there is room), points flying up at the reveal */
-export function Seat({
-  id, name, avatar, gioi, size, ten, x, y, crown, out, right, gain, jump,
-}: {
-  id: string; name: string; avatar: string; gioi?: 'nam' | 'nu'; size: number; ten: boolean; x: number; y: number;
-  crown?: string; out?: boolean; right?: boolean; gain?: number; jump?: boolean;
-}) {
+function Seat({ id, name, avatar, gioi, size, ten, x, y, crown, out, right, gain, jump }: SeatProps) {
   const pw = Math.min(size * 1.5, 230);
   const cut = size > 130 ? 14 : 11;
   return (
@@ -291,3 +228,40 @@ export function Seat({
     </motion.div>
   );
 }
+
+/** Question number and exam name on two paper signs beside the title, with the progress pills under the left one */
+function Header({ main, total, label, gold, rounds }: HeaderProps) {
+  const s = useSkin();
+  const { pills } = s.layout.sideSigns;
+  return (
+    <>
+      <PlateBox side="left">
+        <span className="text-[26px] font-extrabold" style={{ color: s.colors.ink }}>{total ? `${main}/${total}` : main}</span>
+      </PlateBox>
+      {rounds && (
+        <span className="absolute flex gap-1.5" style={{ left: pills.x, top: pills.y }}>
+          {rounds.map((r, i) => (
+            <span key={i} className="h-4 w-11 rounded-full border-2 border-[#3a0d05]" style={{ background: r === 'done' ? '#c8102e' : r === 'now' ? s.colors.gold : '#6b5236' }} />
+          ))}
+        </span>
+      )}
+      <PlateBox side="right" gold={gold}>
+        <span className={`${label.length > 9 ? 'text-[20px]' : 'text-[24px]'} whitespace-nowrap font-extrabold`} style={{ color: gold ? '#7a1208' : s.colors.ink }}>{label}</span>
+      </PlateBox>
+    </>
+  );
+}
+
+/** The line between the answers and the mat: a small pill */
+function StatusLine({ children }: { children: ReactNode }) {
+  const s = useSkin();
+  const st = s.layout.status;
+  return (
+    <div className="absolute flex items-center justify-center" style={{ left: st.x, top: st.y, width: st.w, height: st.h, zIndex: 1700 }}>
+      <div className="max-w-full truncate rounded-full border-2 px-4 text-[21px] font-bold leading-[40px]" style={{ background: s.colors.panel, borderColor: s.colors.gold }}>{children}</div>
+    </div>
+  );
+}
+
+export const DINH_KIT: Kit = { Scene, Header, Host, QuestionSign, GongClock, AnswerFrame, StatusLine, Mat, Seat, RingAvatar, NamePlate, GiftBoard };
+

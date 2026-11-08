@@ -13,7 +13,7 @@ export function useGame() {
   const role = useRole();
   // runs once, before the first effect: only an unmuted stage page may speak
   useState(() => voice.configure({ allowed: role.role === 'stage' && !role.muted }));
-  const v = useGameView();
+  const v = useGameView(role.theme);
   const audio = useStageAudio(role);
 
   useLiveEvents(
@@ -38,7 +38,7 @@ export function useGame() {
     if (role.role !== 'stage') return;
     const L = GAME.loi;
     [...L.hetGio, ...L.nhac, ...L.latKeo, ...L.cuuTro, ...L.thach, ...L.coVuSau].forEach((t) => voice.prefetch(t));
-  }, [role.role]);
+  }, [role.role, v.caiDat.theme]);
 
   return { status: v.status, channelName: v.channelName, view: v.view, caiDat: v.caiDat };
 }

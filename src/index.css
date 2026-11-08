@@ -119,3 +119,9 @@ body,
   80% { transform: translate3d(40px, 880px, 0) rotate(330deg); opacity: 0.9; }
   100% { transform: translate3d(0, 1080px, 0) rotate(420deg); opacity: 0; }
 }
+
+/* Chủ đề Vua Khán Đài: chữ đáp án một cỡ cho mỗi ô (bỏ cỡ riêng của từng thẻ bên trong) */
+.vkd-answer span {
+  font-size: inherit !important;
+  line-height: inherit !important;
+}

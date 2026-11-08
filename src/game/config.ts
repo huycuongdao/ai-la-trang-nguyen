@@ -29,6 +29,33 @@ export const GAME = {
   tenOngDoMacDinh: 'Ông Đồ', // bảng tên trên đầu ông đồ
   defaultChannelName: 'kênh mình',
 
+  // ---------- Chữ hiện trên màn hình theo chủ đề (mặc định = khoa cử; chủ đề khác đổi trong theme-words.ts) ----------
+  text: {
+    player: 'sĩ tử', // người đang chơi
+    hostReading: 'Nghe ông đồ đọc đề…',
+    thanks: 'Ông đồ cảm ơn nhé!',
+    thanksBig: 'Ông đồ vái tạ ơn tấm lòng!',
+    round: 'Kỳ thi', // "Kỳ thi 2 / 4"
+    intro: '4 kỳ thi · 20 câu · gõ A, B, C, D · gõ Bắc, Trung, Nam thi đua 3 miền',
+    board: 'BẢNG VÀNG',
+    boardWeek: 'BẢNG VÀNG TUẦN',
+    boardAfter: (vong: string) => `BẢNG VÀNG SAU ${vong.toUpperCase()}`,
+    boardEmpty: 'Chưa ai ghi danh. Gõ đáp án để vào sân thi!',
+    finalTitle: '“Hiền tài là nguyên khí của quốc gia”',
+    lateJoin: 'Người mới vào vẫn kịp thi kỳ sau!',
+    noPlayers: 'Ván này chưa có sĩ tử nào',
+    seatEmpty: 'Chiếu còn trống',
+    seatJoin: 'Gõ A, B, C hoặc D để ngồi vào',
+    seatJoinOne: 'Gõ 1 chữ cái để ngồi vào',
+    elimJoinTitle: (con: number) => `Ghi tên vào chiếu · còn ${con} giây`,
+    elimJoinHow: 'Gõ A, B, C hoặc D để vào chiếu',
+    rulesTitle: 'LUẬT CHƠI',
+    // [chữ thường, phần nhấn mạnh cuối dòng]
+    rulesExam: [['ĐÚNG CÀNG NHANH:', 'ĐIỂM CÀNG CAO'], ['TRẢ LỜI SAI:', 'BỊ TRỪ ĐIỂM']] as [string, string][],
+    rulesElim: [['TRẢ LỜI SAI:', 'BỊ LOẠI'], ['NGƯỜI CÒN LẠI CUỐI CÙNG:', 'CHIẾN THẮNG']] as [string, string][],
+    elimVote: 'Gõ số trên huy hiệu để chọn sĩ tử, rồi tặng hoa 🌹 hoặc bóng bay 🎈',
+  },
+
   // ---------- Luật thi: 4 vòng, 20 câu ----------
   vong: [
     { ten: 'Khảo hạch trường làng', nhan: 'KHẢO HẠCH', cau: 5, giay: 10, diem: 100, phan: [['de', 4]], toan: 1 },
@@ -57,7 +84,7 @@ export const GAME = {
   vinhQuySec: 15,
 
   // Danh hiệu theo hạng trong ván
-  danhHieu: (hang: number) =>
+  danhHieu: (hang: number): string =>
     hang === 1 ? 'Trạng Nguyên'
     : hang === 2 ? 'Bảng Nhãn'
     : hang === 3 ? 'Thám Hoa'

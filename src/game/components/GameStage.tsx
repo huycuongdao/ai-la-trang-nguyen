@@ -11,10 +11,11 @@ import { GAME } from '../config';
  *   các dãy bàn y 1000-1660 (toạ độ từng bàn ở HANG) · lối đi giữa x 455-640 · nhà tranh, hàng rào bên phải x 900+
  * Chừa 250px dưới cùng và mép phải cho giao diện TikTok.
  */
-const GOLD = '#d9a441';
-const CREAM = '#fff1cc';
+// colors can be changed by a theme: the stage sets --stage-* on its root (see stage-skin/exam-stage.tsx)
+const GOLD = 'var(--stage-gold, #d9a441)';
+const CREAM = 'var(--stage-cream, #fff1cc)';
 const PHAN = '#f5f1e6'; // màu chữ phấn trên bảng đen
-const PANEL = 'rgba(38,18,8,.80)';
+const PANEL = 'var(--stage-panel, rgba(38,18,8,.80))';
 
 export function GameStage({ game }: { game: GameState }) {
   const v = game.view;
@@ -377,17 +378,21 @@ function DapAn({ v }: { v: View }) {
   );
 }
 
-/** Dải dưới chân bảng đen: cách chơi, số người đã nộp, tên vừa nộp */
-export function DongNhac({ v, box = { left: 432, top: 868, width: 430 } }: { v: View; box?: { left: number; top: number; width: number } }) {
+/** Chữ ở dải dưới câu hỏi: cách chơi, số người đã nộp, kết quả vừa công bố */
+export function statusText(v: View) {
   const kq = v.ketQua;
-  const noi = kq
+  return kq
     ? kq.soDung > 0 ? `✅ ${kq.soDung} người đúng · nhanh nhất ${kq.nhanh[0].name} ${(kq.nhanh[0].ms / 1000).toFixed(2).replace('.', ',')}s` : '😮 Chưa ai đúng câu này'
     : v.phase === 'hoi'
-    ? `📜 ${v.recent.length ? `${v.recent.slice(0, 3).join(', ')} vừa nộp · ` : ''}${v.soNop} sĩ tử đã nộp`
+    ? `📜 ${v.recent.length ? `${v.recent.slice(0, 3).join(', ')} vừa nộp · ` : ''}${v.soNop} ${GAME.text.player} đã nộp`
     : 'Gõ A, B, C, D trả lời · Bắc, Trung, Nam chọn phe';
+}
+
+/** Dải dưới chân bảng đen (chủ đề sân thi cũ) */
+export function DongNhac({ v, box = { left: 432, top: 868, width: 430 } }: { v: View; box?: { left: number; top: number; width: number } }) {
   return (
     <div className="absolute flex items-center justify-center" style={{ ...box, height: 46, zIndex: 1700 }}>
-      <div className="max-w-full truncate rounded-full border-2 px-4 text-[21px] font-bold leading-[40px]" style={{ background: PANEL, borderColor: GOLD }}>{noi}</div>
+      <div className="max-w-full truncate rounded-full border-2 px-4 text-[21px] font-bold leading-[40px]" style={{ background: PANEL, borderColor: GOLD }}>{statusText(v)}</div>
     </div>
   );
 }
@@ -509,7 +514,7 @@ export function BangNho({ v, pos = { left: 90, top: 96, width: 900, height: 252 
     return (
       <div className="absolute rounded-[18px] border-[3px] px-5 py-2" style={box}>
         <div className="flex items-baseline justify-between">
-          <span className="text-[26px] font-extrabold text-[#ffd977]">🏆 BẢNG VÀNG TUẦN</span>
+          <span className="text-[26px] font-extrabold text-[#ffd977]">🏆 {GAME.text.boardWeek}</span>
           <span className="text-[22px] font-semibold opacity-75">cộng điểm mọi ván</span>
         </div>
         <div className="grid grid-cols-2 gap-x-8">
@@ -528,12 +533,12 @@ export function BangNho({ v, pos = { left: 90, top: 96, width: 900, height: 252 
   return (
     <div className="absolute rounded-[18px] border-[3px] px-5 py-2" style={box}>
       <div className="flex items-baseline justify-between">
-        <span className="text-[26px] font-extrabold text-[#ffd977]">🏮 BẢNG VÀNG</span>
-        {v.mien.bac.nguoi + v.mien.trung.nguoi + v.mien.nam.nguoi ? <DiemMien v={v} /> : <span className="text-[22px] font-semibold opacity-75">{v.soSiTu} sĩ tử</span>}
+        <span className="text-[26px] font-extrabold text-[#ffd977]">🏮 {GAME.text.board}</span>
+        {v.mien.bac.nguoi + v.mien.trung.nguoi + v.mien.nam.nguoi ? <DiemMien v={v} /> : <span className="text-[22px] font-semibold opacity-75">{v.soSiTu} {GAME.text.player}</span>}
       </div>
       {top.length === 0 ? (
         <div className="mt-6 text-center text-[26px] font-semibold opacity-75">
-          {v.soSiTu ? 'Chưa ai có điểm. Trả lời đúng để lên bảng!' : 'Chưa ai ghi danh. Gõ đáp án để vào sân thi!'}
+          {v.soSiTu ? 'Chưa ai có điểm. Trả lời đúng để lên bảng!' : GAME.text.boardEmpty}
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-x-8">
@@ -573,7 +578,7 @@ export function BangQua({ v }: { v: Pick<View, 'qua'> }) {
               tặng {q.count > 1 ? `${q.count} × ` : ''}
               {q.gift} 🎁
             </div>
-            <div className="text-[28px] font-semibold opacity-85">{q.big ? 'Ông đồ vái tạ ơn tấm lòng!' : 'Ông đồ cảm ơn nhé!'}</div>
+            <div className="text-[28px] font-semibold opacity-85">{q.big ? GAME.text.thanksBig : GAME.text.thanks}</div>
           </div>
         </motion.div>
       )}
@@ -589,7 +594,7 @@ export function BangVang({ v }: { v: View }) {
   return (
     <div className="absolute" style={{ left: 100, top: 150, width: 880, height: 1280, color: '#4a1a0c' }}>
       <div className={`text-center ${vinh ? 'text-[42px] italic' : 'text-[46px]'} font-extrabold text-[#8a1c0c]`}>
-        {vinh ? '“Hiền tài là nguyên khí của quốc gia”' : `BẢNG VÀNG SAU ${v.vongTen.toUpperCase()}`}
+        {vinh ? GAME.text.finalTitle : GAME.text.boardAfter(v.vongTen)}
       </div>
       <div className="mt-1 flex justify-center">
         <DiemMien v={v} big />
@@ -601,7 +606,7 @@ export function BangVang({ v }: { v: View }) {
           <TamKhoi h={tn} left={270} top={0} imgH={540} delay={0.1} big />
         </div>
       )}
-      {vinh && !tn && <div className="mt-24 text-center text-[36px] font-bold">Ván này chưa có sĩ tử nào</div>}
+      {vinh && !tn && <div className="mt-24 text-center text-[36px] font-bold">{GAME.text.noPlayers}</div>}
       <div className={`mt-5 grid grid-cols-2 gap-x-8 gap-y-1 ${vinh ? 'border-t-2 border-[#c9a46a] pt-4' : ''}`}>
         {rest.map((h, i) => (
           <motion.div key={h.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04 }}>
@@ -612,7 +617,7 @@ export function BangVang({ v }: { v: View }) {
       </div>
       {!vinh && v.top.length === 0 && <div className="mt-24 text-center text-[34px] font-bold">Chưa ai ghi danh</div>}
       {!vinh && v.phase === 'bangVang' && v.cauSo <= v.tongCau && (
-        <div className="absolute inset-x-0 bottom-0 text-center text-[30px] font-bold opacity-80">Người mới vào vẫn kịp thi kỳ sau!</div>
+        <div className="absolute inset-x-0 bottom-0 text-center text-[30px] font-bold opacity-80">{GAME.text.lateJoin}</div>
       )}
     </div>
   );

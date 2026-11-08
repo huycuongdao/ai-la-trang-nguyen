@@ -53,9 +53,8 @@ export default function App() {
   );
 }
 
-/** The picture depends on the theme (from the link, else the control page's choice) and on the mode the server is running */
+/** The picture depends on the theme (game.caiDat.theme: the link's, else the control page's choice) and on the mode the server is running */
 function GameScreen({ game }: { game: GameState }) {
-  const { theme } = useRole();
-  const stages = STAGES[theme ?? game.caiDat.theme];
+  const stages = STAGES[game.caiDat.theme];
   return game.view && isElimView(game.view) ? <stages.Elimination game={game} /> : <stages.Exam game={game} />;
 }
