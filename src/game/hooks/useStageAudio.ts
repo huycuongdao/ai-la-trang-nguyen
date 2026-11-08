@@ -9,7 +9,8 @@ import { post } from '../utils/stage-api';
 /**
  * The stage page is the speaker: the server decides what to say and sends `say` lines;
  * this plays them through the voice queue and reports each one finished (or failed) with POST /api/game/spoken.
- * Only the stage page that currently speaks plays or acknowledges anything.
+ * The server sends `say` lines only to the stage page opened last, and marks that page's `view` with `audio: true`,
+ * so any other stage page stays silent.
  */
 export function useStageAudio(role: Role) {
   const isStage = role.role === 'stage';
@@ -23,7 +24,7 @@ export function useStageAudio(role: Role) {
   }, [isStage, role.muted]);
 
   const onSay = (s: SayEvent) => {
-    if (!isStage || !voice.speaker) return;
+    if (!isStage) return;
     if ('stop' in s) return voice.stop();
     if ('prefetch' in s) return voice.prefetch(s.text);
     voice.say(s.text, s.priority, () => void post('/api/game/spoken', { id: s.id }));
@@ -31,7 +32,7 @@ export function useStageAudio(role: Role) {
 
   const onView = (v: View) => {
     if (!isStage) return;
-    if (voice.speaker) sfx.watch(prev.current, v, voice.busy);
+    if (v.audio) sfx.watch(prev.current, v, voice.busy);
     else sfx.music('tat', false); // trang phụ: tắt nhạc
     prev.current = v;
   };

@@ -655,7 +655,8 @@ export class KyThi {
   }
 }
 
-export type View = ReturnType<KyThi['view']>;
+/** The picture of the game. `audio` is added by the server for stage pages: true on the one page that plays sound. */
+export type View = ReturnType<KyThi['view']> & { audio?: boolean };
 
 export interface Qua {
   id: string;

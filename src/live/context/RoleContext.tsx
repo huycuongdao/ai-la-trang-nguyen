@@ -7,8 +7,6 @@ import { createContext, useContext, useState, type ReactNode } from 'react';
 export interface Role {
   role: 'stage' | 'control';
   muted: boolean;
-  /** Id of this stage page; the server lets only the most recently opened stage speak. Empty on the control page. */
-  stageId: string;
 }
 
 function roleFromUrl(): Role {
@@ -17,7 +15,6 @@ function roleFromUrl(): Role {
   return {
     role,
     muted: params.get('mute') === '1',
-    stageId: role === 'stage' ? Math.random().toString(36).slice(2, 10) : '',
   };
 }
 

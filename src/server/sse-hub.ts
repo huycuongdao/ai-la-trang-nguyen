@@ -3,23 +3,43 @@ import type { Express, Response } from 'express';
 export type Broadcast = (eventType: string, data: unknown) => void;
 export type InitialEvent = { event: string; data: unknown };
 
-export function createSseHub() {
-  let sseClients: Response[] = [];
-  // Các trang stage đang mở (theo thứ tự mở). Chỉ trang mở SAU CÙNG được phát tiếng, tránh 2 giọng đọc đè nhau
-  // khi lỡ có 2 nguồn Link trong LIVE Studio hoặc mở thêm ?view=stage ở trình duyệt khác.
-  let stageIds: string[] = [];
+interface Client {
+  res: Response;
+  /** A page opened with ?view=stage (it draws the game and plays the sound) */
+  stage: boolean;
+}
 
-  const broadcast: Broadcast = (eventType, data) => {
-    const payload = `event: ${eventType}\ndata: ${JSON.stringify(data)}\n\n`;
-    for (const client of sseClients) {
-      try {
-        client.write(payload);
-      } catch {
-        // trình duyệt đã đóng
-      }
+export function createSseHub() {
+  let clients: Client[] = [];
+
+  // Only the stage page opened LAST plays sound, so two stage tabs never speak over each other.
+  const audioTarget = () => [...clients].reverse().find((c) => c.stage);
+  const write = (c: Client, payload: string) => {
+    try {
+      c.res.write(payload);
+    } catch {
+      // trình duyệt đã đóng
     }
   };
-  const announceSpeaker = () => broadcast('speaker', { id: stageIds[stageIds.length - 1] ?? null, count: stageIds.length });
+  const frame = (eventType: string, data: unknown) => `event: ${eventType}\ndata: ${JSON.stringify(data)}\n\n`;
+
+  const broadcast: Broadcast = (eventType, data) => {
+    const payload = frame(eventType, data);
+    for (const c of clients) write(c, payload);
+  };
+
+  /** Spoken lines go to the audio stage page only */
+  const sendToAudioStage: Broadcast = (eventType, data) => {
+    const target = audioTarget();
+    if (target) write(target, frame(eventType, data));
+  };
+
+  /** The game picture goes to everyone; stage pages also learn whether THEY are the one that plays sound */
+  const broadcastView = (view: object) => {
+    const target = audioTarget();
+    const plain = frame('view', view);
+    for (const c of clients) write(c, c.stage ? frame('view', { ...view, audio: c === target }) : plain);
+  };
 
   /** `initial` lists what a new page must see first: status, settings, the last control commands. */
   function register(app: Express, initial: () => InitialEvent[]) {
@@ -28,13 +48,9 @@ export function createSseHub() {
       res.setHeader('Cache-Control', 'no-cache');
       res.setHeader('Connection', 'keep-alive');
       res.flushHeaders?.();
-      for (const { event, data } of initial()) res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
-      sseClients.push(res);
-      const stageId = typeof req.query.stage === 'string' ? req.query.stage.slice(0, 40) : '';
-      if (stageId) {
-        stageIds = [...stageIds.filter((x) => x !== stageId), stageId];
-        announceSpeaker();
-      } else res.write(`event: speaker\ndata: ${JSON.stringify({ id: stageIds[stageIds.length - 1] ?? null, count: stageIds.length })}\n\n`);
+      for (const { event, data } of initial()) res.write(frame(event, data));
+      const client: Client = { res, stage: req.query.role === 'stage' };
+      clients.push(client);
 
       const heartbeat = setInterval(() => {
         try {
@@ -46,14 +62,17 @@ export function createSseHub() {
 
       req.on('close', () => {
         clearInterval(heartbeat);
-        sseClients = sseClients.filter((c) => c !== res);
-        if (stageId) {
-          stageIds = stageIds.filter((x) => x !== stageId);
-          announceSpeaker();
-        }
+        clients = clients.filter((c) => c !== client);
       });
     });
   }
 
-  return { broadcast, register, clientCount: () => sseClients.length, stageCount: () => stageIds.length };
+  return {
+    broadcast,
+    broadcastView,
+    sendToAudioStage,
+    register,
+    clientCount: () => clients.length,
+    stageCount: () => clients.filter((c) => c.stage).length,
+  };
 }

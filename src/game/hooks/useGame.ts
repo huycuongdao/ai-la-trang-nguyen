@@ -30,7 +30,7 @@ export function useGame() {
         if (role.role === 'stage' && c.action === 'setRate' && c.text) voice.rate = Number(c.text) || 1;
       },
     },
-    { stageId: role.stageId },
+    { stage: role.role === 'stage' },
   );
 
   // common lines are read often: have the voice ready from the start

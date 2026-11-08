@@ -52,7 +52,11 @@ registerSettings(app, hub.broadcast);
 registerDataRoutes(app);
 registerTts(app);
 host = registerGameHost(app, {
-  broadcast: hub.broadcast,
+  broadcast: (event, data) => {
+    if (event === 'say') hub.sendToAudioStage(event, data);
+    else if (event === 'view') hub.broadcastView(data as object);
+    else hub.broadcast(event, data);
+  },
   stageCount: hub.stageCount,
   channelName: () => lastControl.name?.text ?? GAME.defaultChannelName,
 });
