@@ -19,6 +19,9 @@ export interface Vong {
   toan: number; // cấp câu toán tự sinh (1-4), 0 = không có
 }
 
+/** A saved round younger than this is resumed after a restart or reload; older ones are dropped */
+export const ROOM_RESUME_WINDOW_MS = 10 * 60 * 1000;
+
 export const GAME = {
   title: 'Ai Là Trạng Nguyên',
   // mặc định khi trang điều khiển để trống

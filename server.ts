@@ -28,7 +28,7 @@ const app = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3007;
 
 app.use(httpGuard);
-app.use(express.json());
+app.use(express.json({ limit: '4mb' })); // round snapshots with hundreds of players are large
 app.use('/assets', express.static(path.join(ROOT, 'public', 'assets')));
 
 const hub = createSseHub();

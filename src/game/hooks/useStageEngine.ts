@@ -102,6 +102,8 @@ export function useStageEngine(room: KyThi, audio: StageAudio, role: Role, v: Ga
     if (!isStage) return;
     let ready = false;
     let lastPost = 0;
+    let lastSave = 0;
+    let savedPhase = '';
     let prev: View | null = null;
     void layTuan(fetch('/api/bang-tuan'));
     // câu chung đọc nhiều lần: tạo giọng sẵn ngay từ đầu
@@ -112,6 +114,11 @@ export function useStageEngine(room: KyThi, audio: StageAudio, role: Role, v: Ga
       .then((r) => r.json())
       .then((u) => Object.assign(room.used, u))
       .catch(() => {})
+      // reload or restart within the resume window: continue the saved round instead of starting a new wait
+      .then(() => fetch('/api/room').then((r) => r.json()).catch(() => null))
+      .then((saved) => {
+        if (!room.endsAt && saved && room.restore(saved) && room.phase === 'doc') room.docXong(Date.now()); // the voice that was reading is gone
+      })
       .finally(() => {
         if (!room.endsAt) room.cho(Date.now()); // chủ kênh đã bấm "Bắt đầu ngay" trong lúc chờ thì thôi
         ready = true;
@@ -136,6 +143,12 @@ export function useStageEngine(room: KyThi, audio: StageAudio, role: Role, v: Ga
       if (voice.speaker && now - lastPost >= 500) {
         lastPost = now;
         void post('/api/game/state', snap);
+      }
+      // save the round: on every phase change and every 5 s while a round is running
+      if (voice.speaker && (snap.phase !== savedPhase || (snap.phase !== 'cho' && now - lastSave >= 5000))) {
+        savedPhase = snap.phase;
+        lastSave = now;
+        void post('/api/room', room.snapshot(now));
       }
     }, 250);
     const share = setInterval(() => {

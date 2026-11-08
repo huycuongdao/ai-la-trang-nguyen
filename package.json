@@ -8,7 +8,7 @@
     "start": "tsx server.ts",
     "build": "vite build",
     "lint": "tsc --noEmit",
-    "test": "tsx src/game/engine/exam.test.ts && tsx src/game/engine/golden-run.test.ts && tsx src/server/atomic-write.test.ts && tsx src/server/routes.test.ts && tsx src/server/data-migration.test.ts && node tools/check-asset-paths.mjs && node tools/check-questions.mjs"
+    "test": "tsx src/game/engine/exam.test.ts && tsx src/game/engine/golden-run.test.ts && tsx src/game/engine/room-snapshot.test.ts && tsx src/server/atomic-write.test.ts && tsx src/server/routes.test.ts && tsx src/server/data-migration.test.ts && node tools/check-asset-paths.mjs && node tools/check-questions.mjs"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",

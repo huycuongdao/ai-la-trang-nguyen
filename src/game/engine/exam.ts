@@ -107,6 +107,42 @@ export interface Hang {
   dauTuan: boolean; // đang đứng đầu bảng vàng tuần
 }
 
+/**
+ * Everything needed to resume a round after a restart. Plain JSON: Maps are arrays of [key, value] pairs.
+ * Not saved: `rand` (a new one is passed on restore) and `used` (kept in used-questions.json).
+ * Questions are saved by id plus their shuffled option order; math questions (not in the bank) are saved whole.
+ */
+export interface RoomSnapshot {
+  version: 1;
+  savedAt: number;
+  phase: Phase;
+  endsAt: number;
+  shownAt: number;
+  idx: number;
+  cau: { id: string; opts: string[]; vong: number; math?: McQ }[];
+  answers: [string, { chon: number; ms: number }][];
+  counts: number[];
+  recent: string[];
+  ketQua: { soDung: number; nhanh: { name: string; ms: number; diem: number }[] } | null;
+  skew: number;
+  skewN: number;
+  events: Ev[];
+  siTu: [string, SiTu][];
+  gioiChon: [string, Gioi][];
+  mienChon: [string, Mien][];
+  tuan: { id?: string; name: string; avatar: string; diem: number }[];
+  trangTruoc: string | null;
+  trangMoi: string | null;
+  cuu: { tim: number; xong: boolean; loai: number[] };
+  dauTruoc: string | null;
+  dauBaoCau: number;
+  mienBaoCau: number;
+  quaCho: Qua[];
+  qua: (Qua & { den: number }) | null;
+  nhacDa: boolean;
+  khach: { id: string; name: string }[];
+}
+
 const shuffle = <T,>(a: T[], rand: () => number) => {
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(rand() * (i + 1));
@@ -186,6 +222,85 @@ export class KyThi {
     public used: Record<string, number> = {},
     private rand: () => number = Math.random,
   ) {}
+
+  /** Copy of the whole round state as plain JSON (see RoomSnapshot) */
+  snapshot(now: number): RoomSnapshot {
+    const copy = <T,>(x: T): T => JSON.parse(JSON.stringify(x));
+    return copy({
+      version: 1 as const,
+      savedAt: now,
+      phase: this.phase,
+      endsAt: this.endsAt,
+      shownAt: this.shownAt,
+      idx: this.idx,
+      cau: this.cauList.map((c) => ({ id: c.q.id, opts: c.opts, vong: c.vong, math: c.q.id.startsWith('toan:') ? c.q : undefined })),
+      answers: [...this.answers],
+      counts: this.counts,
+      recent: this.recent,
+      ketQua: this.ketQua,
+      skew: this.skew,
+      skewN: this.skewN,
+      events: this.events,
+      siTu: [...this.siTu],
+      gioiChon: [...this.gioiChon],
+      mienChon: [...this.mienChon],
+      tuan: this.tuan,
+      trangTruoc: this.trangTruoc,
+      trangMoi: this.trangMoi,
+      cuu: this.cuu,
+      dauTruoc: this.dauTruoc,
+      dauBaoCau: this.dauBaoCau,
+      mienBaoCau: this.mienBaoCau,
+      quaCho: this.quaCho,
+      qua: this.qua,
+      nhacDa: this.nhacDa,
+      khach: this.khach,
+    });
+  }
+
+  /**
+   * Put a snapshot back into this engine. Returns false (and changes nothing) when the snapshot is from another
+   * version or names a question the bank no longer has. Time is not adjusted: a restart gap is simply elapsed time.
+   */
+  restore(data: RoomSnapshot): boolean {
+    if (!data || data.version !== 1) return false;
+    const byId = new Map(this.bank.map((q) => [q.id, q]));
+    const cauList: Cau[] = [];
+    for (const c of data.cau) {
+      const q = c.math ?? byId.get(c.id);
+      const ans = q ? c.opts.indexOf(q.right) : -1;
+      if (!q || ans < 0 || c.opts.length !== 4) return false;
+      cauList.push({ q, opts: c.opts, ans, vong: c.vong });
+    }
+    const d = JSON.parse(JSON.stringify(data)) as RoomSnapshot;
+    this.cauList = cauList;
+    this.phase = d.phase;
+    this.endsAt = d.endsAt;
+    this.shownAt = d.shownAt;
+    this.idx = d.idx;
+    this.answers = new Map(d.answers);
+    this.counts = d.counts;
+    this.recent = d.recent;
+    this.ketQua = d.ketQua;
+    this.skew = d.skew;
+    this.skewN = d.skewN;
+    this.events = d.events;
+    this.siTu = new Map(d.siTu);
+    this.gioiChon = new Map(d.gioiChon);
+    this.mienChon = new Map(d.mienChon);
+    this.tuan = d.tuan;
+    this.trangTruoc = d.trangTruoc;
+    this.trangMoi = d.trangMoi;
+    this.cuu = d.cuu;
+    this.dauTruoc = d.dauTruoc;
+    this.dauBaoCau = d.dauBaoCau;
+    this.mienBaoCau = d.mienBaoCau;
+    this.quaCho = d.quaCho;
+    this.qua = d.qua;
+    this.nhacDa = d.nhacDa;
+    this.khach = d.khach;
+    return true;
+  }
 
   /** Bắt đầu đếm ngược tới ván mới */
   cho(now: number) {
