@@ -1,4 +1,3 @@
-import { IS_STAGE, MUTE } from './page';
 import { containsBanned } from './banned-words';
 
 /**
@@ -24,13 +23,19 @@ class Voice {
   private lastSpokeAt = Date.now();
   rate = 1;
   volume = 1;
-  enabled = IS_STAGE && !MUTE;
+  enabled = false;
+  /** Set once by the stage page: only a stage page that is not muted may speak */
+  private allowed = false;
+  configure({ allowed }: { allowed: boolean }) {
+    this.allowed = allowed;
+    this.enabled = allowed && this.speaker;
+  }
   /** Trang stage này có phải trang chính không (lỡ mở 2 trang stage thì trang cũ thành trang phụ: im lặng, không gửi dữ liệu) */
   speaker = true;
   setSpeaker(mine: boolean) {
     if (!mine && this.speaker) this.stop();
     this.speaker = mine;
-    this.enabled = IS_STAGE && !MUTE && mine;
+    this.enabled = this.allowed && mine;
   }
   onBlocked?: () => void;
 

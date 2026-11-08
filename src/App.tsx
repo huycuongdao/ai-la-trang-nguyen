@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
-import { IS_STAGE } from './live/page';
-import { StageFrame } from './live/StageFrame';
-import { Dashboard } from './live/Dashboard';
-import { voice } from './live/voice';
-import { sfx } from './game/sfx';
-import { useGame } from './game/useGame';
-import { GameStage } from './game/GameStage';
-import { GameControls } from './game/GameControls';
+import { useRole } from './live/context/RoleContext';
+import { StageFrame } from './live/components/StageFrame';
+import { Dashboard } from './live/components/Dashboard';
+import { voice } from './live/utils/voice';
+import { sfx } from './game/audio/sfx';
+import { useGame } from './game/hooks/useGame';
+import { GameStage } from './game/components/GameStage';
+import { GameControls } from './game/components/GameControls';
 
 export default function App() {
+  const { role } = useRole();
   const game = useGame();
   const [blocked, setBlocked] = useState(false);
   useEffect(() => {
@@ -16,7 +17,7 @@ export default function App() {
   }, []);
 
   // Trang cho TikTok LIVE Studio: chỉ có màn hình game
-  if (IS_STAGE) {
+  if (role === 'stage') {
     return (
       <div className="flex h-screen w-screen items-center justify-center bg-black" onClick={() => {
           setBlocked(false);

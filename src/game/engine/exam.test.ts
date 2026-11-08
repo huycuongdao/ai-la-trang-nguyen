@@ -1,8 +1,8 @@
-// Kiểm tra luật chơi: npx tsx src/game/exam.test.ts
+// Kiểm tra luật chơi: npx tsx src/game/engine/exam.test.ts
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { choiceOf, diemDung, KyThi, parseMc } from './exam';
-import { GAME } from './config';
+import { GAME } from '../config';
 
 // Đọc đáp án
 assert.equal(choiceOf('a'), 0);
@@ -19,7 +19,7 @@ assert.equal(diemDung(100, 5_000, 10_000), 75);
 
 // Bộ câu đọc được, đủ câu cho 1 ván
 const errors: string[] = [];
-const dir = new URL('./questions/', import.meta.url);
+const dir = new URL('../questions/', import.meta.url);
 const bank = fs.readdirSync(dir).filter((f) => f.endsWith('.txt')).flatMap((f) => parseMc(fs.readFileSync(new URL(f, dir), 'utf8'), errors));
 assert.deepEqual(errors, []);
 if (bank.length < 100) { console.log('Chưa đủ câu hỏi để chạy thử ván, bỏ qua phần ván'); }

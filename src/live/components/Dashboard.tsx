@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import type { LiveStatus } from './types';
-import { emitTest, sendControl } from './page';
+import type { LiveStatus } from '../types';
+import { emitTest, sendControl } from '../utils/page';
 
 const FAKE_NAMES = ['Lan Anh', 'Minh Tuấn', 'Bé Na 🌸', 'Hoàng Long', 'Thu Trang', 'Quốc Bảo', 'duyanh99', '𝑵𝒈𝒐̣𝒄 𝑨𝒏𝒉'];
 const pick = () => {

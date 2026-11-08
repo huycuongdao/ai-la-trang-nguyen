@@ -1,13 +1,12 @@
 import { useEffect, useRef } from 'react';
-import type { LiveHandlers } from './types';
-import { IS_STAGE, STAGE_ID } from './page';
-import { voice } from './voice';
+import type { LiveHandlers } from '../types';
+import { voice } from '../utils/voice';
 
 /**
  * Nghe sự kiện live từ server. Handler luôn là bản mới nhất (không lo state cũ),
  * tự kết nối lại khi rớt mạng.
  */
-export function useLiveEvents(handlers: LiveHandlers) {
+export function useLiveEvents(handlers: LiveHandlers, { stageId = '' }: { stageId?: string } = {}) {
   const ref = useRef(handlers);
   ref.current = handlers;
 
@@ -26,7 +25,7 @@ export function useLiveEvents(handlers: LiveHandlers) {
       });
 
     const connect = () => {
-      source = new EventSource(IS_STAGE ? `/api/tiktok/events?stage=${STAGE_ID}` : '/api/tiktok/events');
+      source = new EventSource(stageId ? `/api/tiktok/events?stage=${stageId}` : '/api/tiktok/events');
       on('status', (d) => ref.current.onStatus?.(d));
       on('chat', (d) => ref.current.onChat?.(d));
       on('gift', (d) => ref.current.onGift?.(d));
@@ -39,7 +38,7 @@ export function useLiveEvents(handlers: LiveHandlers) {
       on('gamestate', (d) => ref.current.onGameState?.(d));
       on('caiDat', (d) => ref.current.onCaiDat?.(d));
       // trang stage bị trang mới hơn thay chỗ: im lặng hẳn và thôi gửi dữ liệu
-      on('speaker', (d) => IS_STAGE && voice.setSpeaker(d.id === STAGE_ID));
+      on('speaker', (d) => stageId && voice.setSpeaker(d.id === stageId));
       source.onerror = () => {
         source?.close();
         if (!closed) retry = setTimeout(connect, 3000);
@@ -52,5 +51,5 @@ export function useLiveEvents(handlers: LiveHandlers) {
       clearTimeout(retry);
       source?.close();
     };
-  }, []);
+  }, [stageId]);
 }

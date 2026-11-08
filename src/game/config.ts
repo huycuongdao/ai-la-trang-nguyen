@@ -3,7 +3,7 @@
 //  Câu đọc: `name` = tên người xem (đã làm sạch), `kenh` = tên kênh (ô "Tên kênh" ở trang điều khiển)
 // =====================================================
 
-import type { WishTopic } from '../live/chatter';
+import type { WishTopic } from '../live/utils/chatter';
 
 // Nhóm câu trong các file src/game/questions/*.txt:
 //   [de] khảo hạch · [vua] thi Hương · [kho] thi Hội · [dinh] thi Đình (khó, khoa cử) · [meo] đố mẹo

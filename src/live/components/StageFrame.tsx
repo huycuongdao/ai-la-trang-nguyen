@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { STAGE_H, STAGE_W } from './page';
+import { STAGE_H, STAGE_W } from '../utils/page';
 
 /** Khung 1080x1920 tự co giãn vừa cửa sổ. Bên trong cứ vẽ theo pixel 1080x1920. */
 export function StageFrame({ children, maxHeight }: { children: ReactNode; maxHeight?: number }) {

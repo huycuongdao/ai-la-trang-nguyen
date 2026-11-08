@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { emitTest, sendControl } from '../live/page';
-import { GAME } from './config';
+import { emitTest, sendControl } from '../../live/utils/page';
+import { GAME } from '../config';
 
 const HO = ['Minh', 'Lan', 'Tuấn', 'Hoa', 'Long', 'Thảo', 'Nam', 'Vy', 'Khánh', 'An', 'Bình', 'Trang', 'Hùng', 'My', 'Phúc'];
 

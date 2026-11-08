@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react';
-import type { GameState } from './useGame';
-import type { Hang, View } from './exam';
-import { GAME } from './config';
+import type { GameState } from '../hooks/useGame';
+import type { Hang, View } from '../engine/exam';
+import { GAME } from '../config';
 
 /**
  * Màn hình live 1080x1920: sân thi đầu làng, vẽ đè lên ảnh nền public/assets/background/village-yard.jpg

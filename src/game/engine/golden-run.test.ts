@@ -1,11 +1,11 @@
 // Golden run: a seeded, scripted game must always give the same transitions, events and ranking.
-// Run: npx tsx src/game/golden-run.test.ts   (add --update to rewrite the fixture)
+// Run: npx tsx src/game/engine/golden-run.test.ts   (add --update to rewrite the fixture)
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { GAME } from './config';
+import { GAME } from '../config';
 import { KyThi, parseMc, type Ev } from './exam';
 
-const dir = new URL('./questions/', import.meta.url);
+const dir = new URL('../questions/', import.meta.url);
 const fixtureUrl = new URL('./fixtures/golden-run.json', import.meta.url);
 
 function mulberry32(seed: number) {
