@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import type { LiveStatus } from './types';
 import { emitTest, sendControl } from './page';
 
@@ -26,7 +26,12 @@ export function Dashboard({
   preview: ReactNode;
   extra?: ReactNode;
 }) {
-  const [user, setUser] = useState(() => localStorageGet('tiktokUser'));
+  // The server owns the username: the input is filled from the status event until the owner types.
+  const [user, setUser] = useState('');
+  const touched = useRef(false);
+  useEffect(() => {
+    if (!touched.current && status?.username) setUser(status.username);
+  }, [status?.username]);
   const [nameText, setNameText] = useState('');
   const [msg, setMsg] = useState('');
   const [speakText, setSpeakText] = useState('');
@@ -35,7 +40,6 @@ export function Dashboard({
   const connect = async () => {
     setBusy(true);
     setMsg('');
-    localStorageSet('tiktokUser', user);
     try {
       const r = await fetch('/api/tiktok/connect', {
         method: 'POST',
@@ -73,7 +77,10 @@ export function Dashboard({
                 className="min-w-0 flex-1 rounded-lg bg-slate-800 px-3 py-2"
                 placeholder="username TikTok (không cần @)"
                 value={user}
-                onChange={(e) => setUser(e.target.value)}
+                onChange={(e) => {
+                  touched.current = true;
+                  setUser(e.target.value);
+                }}
               />
               <Btn onClick={connect} disabled={busy || !user.trim()}>
                 {busy ? 'Đang nối...' : 'Kết nối'}
@@ -237,19 +244,4 @@ function Btn({
       {children}
     </button>
   );
-}
-
-function localStorageGet(k: string) {
-  try {
-    return localStorage.getItem(k) || '';
-  } catch {
-    return '';
-  }
-}
-function localStorageSet(k: string, v: string) {
-  try {
-    localStorage.setItem(k, v);
-  } catch {
-    // bỏ qua
-  }
 }
