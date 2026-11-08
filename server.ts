@@ -18,6 +18,28 @@ import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts';
 
 dotenv.config();
 
+// Ghi file JSON an toàn: ghi ra file tạm cùng thư mục rồi đổi tên đè lên file thật, tắt máy giữa chừng không làm hỏng file
+function writeJsonAtomic(file: string, value: unknown, pretty = false) {
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  const tmp = `${file}.tmp-${process.pid}`;
+  fs.writeFileSync(tmp, JSON.stringify(value, null, pretty ? 2 : undefined));
+  for (let i = 0; ; i++) {
+    try {
+      fs.renameSync(tmp, file);
+      return;
+    } catch (err) {
+      if (i < 2) {
+        Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 50); // Windows: phần mềm diệt virus có thể đang giữ file
+        continue;
+      }
+      console.warn('Đổi tên file tạm lỗi, ghi thẳng:', err instanceof Error ? err.message : err);
+      fs.writeFileSync(file, JSON.stringify(value, null, pretty ? 2 : undefined));
+      fs.rmSync(tmp, { force: true });
+      return;
+    }
+  }
+}
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3007;
@@ -86,7 +108,7 @@ try {
 const saveSettings = (patch: typeof settings) => {
   settings = { ...settings, ...patch };
   try {
-    fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
+    writeJsonAtomic(SETTINGS_FILE, settings, true);
   } catch (err) {
     console.error('Không lưu được settings.json:', err);
   }
@@ -416,8 +438,7 @@ app.post('/api/da-hoi', (req, res) => {
   const clean: Record<string, number> = {};
   for (const [k, v] of Object.entries(body)) if (typeof v === 'number' && k.length < 300) clean[k] = v;
   try {
-    fs.mkdirSync(path.dirname(USED_FILE), { recursive: true });
-    fs.writeFileSync(USED_FILE, JSON.stringify(clean));
+    writeJsonAtomic(USED_FILE, clean);
     res.json({ success: true });
   } catch (err) {
     console.error('Không lưu được data/da-hoi.json:', err);
@@ -465,8 +486,7 @@ app.post('/api/bang-tuan', (req, res) => {
     };
   }
   try {
-    fs.mkdirSync(path.dirname(TUAN_FILE), { recursive: true });
-    fs.writeFileSync(TUAN_FILE, JSON.stringify(b));
+    writeJsonAtomic(TUAN_FILE, b);
   } catch (err) {
     console.error('Không lưu được data/bang-tuan.json:', err);
   }
