@@ -654,7 +654,7 @@ function TamKhoi({ h, left, top, imgH, delay, big }: { h: Hang; left: number; to
 const HOST_FILE: Record<string, string> = { mung: 'cheer', 'suy-nghi': 'think', chi: 'point', cuoi: 'smile', tiec: 'regret' };
 
 /** Ông đồ đứng cạnh bảng đen, bên trái trước gốc đa; đổi tư thế theo pha */
-export function MC({ v, ten }: { v: { phase: string; ketQua: { soDung: number } | null }; ten: string }) {
+export function MC({ v, ten, left = -24, top = 562, height = 360 }: { v: { phase: string; ketQua: { soDung: number } | null }; ten: string; left?: number; top?: number; height?: number }) {
   const pose =
     v.phase === 'vinhQuy' || v.phase === 'vinhDanh' ? 'mung'
     : v.phase === 'dapAn' ? (v.ketQua?.soDung ? 'mung' : 'tiec')
@@ -662,7 +662,7 @@ export function MC({ v, ten }: { v: { phase: string; ketQua: { soDung: number } 
     : v.phase === 'doc' || v.phase === 'bangVang' ? 'chi'
     : 'cuoi';
   return (
-    <div className="pointer-events-none absolute" style={{ left: -24, top: 562, height: 360, zIndex: 1100 }}>
+    <div className="pointer-events-none absolute" style={{ left, top, height, zIndex: 1100 }}>
       {/* bảng tên ông đồ */}
       <div className="absolute left-1/2 top-[-6px] z-10 -translate-x-1/2 whitespace-nowrap rounded-full border-2 px-3 text-[22px] font-extrabold leading-[34px]" style={{ background: 'linear-gradient(#ffd34d,#e8a33d)', borderColor: '#fff3c4', color: '#4a1a0c', boxShadow: '0 3px 8px rgba(0,0,0,.4)' }}>
         🖌️ {ten}
@@ -675,7 +675,7 @@ export function MC({ v, ten }: { v: { phase: string; ketQua: { soDung: number } 
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.25 }}
-          style={{ height: 360, filter: 'drop-shadow(0 8px 10px rgba(0,0,0,.45))' }}
+          style={{ height, filter: 'drop-shadow(0 8px 10px rgba(0,0,0,.45))' }}
           draggable={false}
         />
       </AnimatePresence>
