@@ -46,10 +46,10 @@ git clone https://github.com/workaipvlinh-byte/ai-la-trang-nguyen.git
 
 ### Bước 3: Chạy game
 
-1. Mở thư mục game, **bấm đúp `BAT-LIVE.bat`**.
+1. Mở thư mục game, **bấm đúp `start-live.bat`**.
 2. **Lần đầu** máy sẽ tự cài thư viện, mất khoảng 1 đến 3 phút tuỳ mạng. Các lần sau mở ngay.
 3. Khoảng 8 giây sau, trình duyệt tự mở **trang điều khiển** ở `http://localhost:3007`.
-4. **Để cửa sổ đen của BAT-LIVE mở suốt buổi live.** Đóng cửa sổ đó là tắt game.
+4. **Để cửa sổ đen của start-live mở suốt buổi live.** Đóng cửa sổ đó là tắt game.
 
 ### Bước 4: Gắn game vào TikTok LIVE Studio
 
@@ -66,7 +66,7 @@ Phải dùng `lvh.me` chứ không dùng `localhost`, vì LIVE Studio không nh�
 2. Trên trang điều khiển, nhập **tên TikTok** của bạn (phần sau chữ @), bấm **Kết nối**.
 3. Thấy chữ "Đã kết nối" là xong. Game tự đếm ngược và bắt đầu ván đầu tiên.
 
-Server nhớ tài khoản này. Lần sau mở BAT-LIVE là nó tự kết nối lại. Muốn đổi tài khoản thì bấm **Ngắt** rồi nhập tên mới.
+Server nhớ tài khoản này. Lần sau mở start-live là nó tự kết nối lại. Muốn đổi tài khoản thì bấm **Ngắt** rồi nhập tên mới.
 
 ### Chưa live mà muốn thử
 
@@ -98,8 +98,8 @@ Trên trang điều khiển có các nút **Giả lập 1 người / 60 người
 **Muốn giọng "Adam bựa" có cười, thở dài** như bản của tác giả, bạn cài thêm [VieNeu-TTS](https://github.com/pnnbao97/VieNeu-TTS), bộ đọc tiếng Việt mã nguồn mở chạy ngay trên máy:
 
 1. Cài VieNeu-TTS theo hướng dẫn trong repo của họ. Máy có card NVIDIA sẽ đọc nhanh; máy chỉ có CPU vẫn chạy được nhưng chậm hơn.
-2. Mở `BAT-LIVE.bat` bằng Notepad, sửa dòng `set VIENEU_DIR=E:\02_AI\VieNeu-TTS` thành thư mục bạn đã cài.
-3. Lưu lại, bấm đúp BAT-LIVE như bình thường. Nó sẽ tự mở thêm cửa sổ "Giọng VieNeu". Đang live thì đừng tắt cửa sổ đó.
+2. Mở `start-live.bat` bằng Notepad, sửa dòng `set VIENEU_DIR=E:\02_AI\VieNeu-TTS` thành thư mục bạn đã cài.
+3. Lưu lại, bấm đúp start-live như bình thường. Nó sẽ tự mở thêm cửa sổ "Giọng VieNeu". Đang live thì đừng tắt cửa sổ đó.
 
 VieNeu tắt hoặc lỗi giữa chừng thì game tự quay về giọng Edge, ông đồ không bị câm.
 
@@ -107,32 +107,34 @@ VieNeu tắt hoặc lỗi giữa chừng thì game tự quay về giọng Edge, 
 
 Các file bạn hay sửa nhất đều mở được bằng Notepad. Sửa xong thì làm mới trang stage trong LIVE Studio (chuột phải vào nguồn, chọn Làm mới).
 
-- **Câu hỏi**: `src/game/cau-hoi/*.txt`, mỗi chủ đề một file. Mỗi dòng một câu:
+- **Câu hỏi**: `src/game/questions/*.txt`, mỗi chủ đề một file. Mỗi dòng một câu:
   ```
   câu hỏi | ĐÁP ÁN ĐÚNG | sai | sai | sai
   ```
-  Đáp án đúng luôn để ở vị trí thứ hai, game tự xáo A B C D. Dòng `[de]`, `[vua]`, `[kho]`, `[dinh]`, `[meo]` là nhóm độ khó (khảo hạch, thi Hương, thi Hội, thi Đình, đố mẹo). Quy tắc viết câu có ở `src/game/cau-hoi/HUONG-DAN.md`. Viết xong chạy `node tools/kiem-tra-cau-hoi.mjs` để soát lỗi.
+  Đáp án đúng luôn để ở vị trí thứ hai, game tự xáo A B C D. Dòng `[de]`, `[vua]`, `[kho]`, `[dinh]`, `[meo]` là nhóm độ khó (khảo hạch, thi Hương, thi Hội, thi Đình, đố mẹo). Quy tắc viết câu có ở `src/game/questions/writing-guide.md`. Viết xong chạy `node tools/check-questions.mjs` để soát lỗi.
 - **Lời ông đồ, số liệu luật chơi**: `src/game/config.ts`. Mọi câu ông đồ nói, thời gian từng kỳ, điểm, số tim cứu trợ... đều ở đây.
-- **Ảnh**: nền ở `public/assets/bg/nen2.jpg` (1080 × 1920). Ảnh ông đồ gốc ở `public/assets/MC/`, tam khôi ở `public/assets/top/`, sĩ tử, trẻ con và các cụ ở `public/assets/nhan-vat/`. Thay ảnh xong thì chạy `node tools/tach-nen.mjs` (ông đồ, tam khôi) hoặc `node tools/cat-nhan-vat.mjs` (nhân vật sân thi) để tách nền trắng.
+- **Ảnh**: nền ở `public/assets/background/village-yard.jpg` (1080 × 1920). Ảnh gốc (ông đồ, tam khôi, sĩ tử, trẻ con, các cụ, nền) để trong `art-source/`, ảnh đã tách nền dùng trong game ở `public/assets/characters/`. Thay ảnh gốc xong thì chạy `node tools/remove-background.mjs` (ông đồ, tam khôi) hoặc `node tools/cut-characters.mjs` (nhân vật sân thi) để tách nền trắng.
 
 ## Gặp lỗi thì sao
 
 - **Không nghe tiếng ông đồ**: nếu mở trang stage bằng Chrome để thử, bấm vào trang một lần (Chrome chặn tự phát tiếng tới lúc bạn bấm). Trong LIVE Studio thì không bị chặn.
 - **Nghe hai giọng chồng nhau**: bạn đang mở trang stage ở hai chỗ. Game chỉ cho trang mở sau cùng phát tiếng, nhưng tốt nhất chỉ mở trong LIVE Studio.
 - **Không kết nối được TikTok**: phải bấm Phát trực tiếp trong LIVE Studio trước rồi mới kết nối. Server sẽ tự thử lại 15 giây, 30 giây, 1 phút, tối đa 2 phút một lần.
-- **Cửa sổ BAT báo cổng 3007 đang bận**: đang có một bản game khác chạy. Đóng hết cửa sổ BAT-LIVE cũ rồi mở lại.
+- **Cửa sổ start-live báo cổng 3007 đang bận**: đang có một bản game khác chạy. Đóng hết cửa sổ start-live cũ rồi mở lại.
 - **Gặp câu hỏi sai**: bấm "Bỏ câu này" ở trang điều khiển. Bộ câu do AI viết rồi soát lại, gần 5.000 câu nên khó tránh sót vài câu.
 
 ## Cho người biết code
 
-- Node.js + TypeScript. Server `server.ts` (Express), giao diện React 19 + Vite + Tailwind 4, hiệu ứng `motion`, kết nối TikTok bằng `tiktok-live-connector` 2.x.
-- Lõi luật chơi: `src/game/thi.ts` (không phụ thuộc React). Kiểm tra: `npx tsx src/game/thi.check.ts`.
-- Màn hình 1080 × 1920: `src/game/GameStage.tsx`. Âm thanh tự tạo bằng Web Audio: `src/game/sfx.ts`.
+- Node.js + TypeScript. Server Express chia theo việc trong `src/server/` (`server.ts` chỉ khởi động), giao diện React 19 + Vite + Tailwind 4, hiệu ứng `motion`, kết nối TikTok bằng `tiktok-live-connector` 2.x.
+- Lõi luật chơi (không phụ thuộc React): `src/game/engine/exam.ts`. Màn hình 1080 × 1920: `src/game/components/GameStage.tsx`. Âm thanh tự tạo bằng Web Audio: `src/game/audio/sfx.ts`.
+- Thư mục `src/game`: `components/` (giao diện), `hooks/` (nối sự kiện TikTok với game), `engine/` (luật chơi và test), `audio/`, `utils/`, `questions/` (bộ câu hỏi). Thư mục `src/live`: `components/`, `hooks/`, `context/` (vai trò trang stage hay điều khiển), `utils/`.
+- Kiểm tra: `npm test` chạy luật chơi, ván chơi mẫu có hạt giống cố định (so với `src/game/engine/fixtures/golden-run.json`), ghi file an toàn, danh sách API, chuyển file dữ liệu, bộ câu hỏi và đường dẫn ảnh. `npm run lint` kiểm tra kiểu.
+- Dữ liệu chạy lúc live nằm ở `data/` (`used-questions.json`, `weekly-board.json`), tên kênh ở `settings.json`; cả hai không đưa lên git.
 - Server chỉ nghe `127.0.0.1`, người cùng mạng Wi-Fi không điều khiển được.
 - Cổng 3007, đổi được bằng biến `PORT`.
 
 ## Giấy phép
 
-Mã nguồn dùng giấy phép [MIT](LICENSE). Ảnh ông đồ, ảnh tam khôi và ảnh nền (`public/assets/`, `ai-la-trang-nguyen.png`) thuộc về tác giả. Muốn dùng cho kênh của mình thì nên thay bằng ảnh riêng.
+Mã nguồn dùng giấy phép [MIT](LICENSE). Ảnh ông đồ, ảnh tam khôi và ảnh nền (`public/assets/`, `art-source/`) thuộc về tác giả. Muốn dùng cho kênh của mình thì nên thay bằng ảnh riêng.
 
 Game lấy cảm hứng từ các game show đố vui trên truyền hình nhưng không dùng tên, giao diện, nhạc hay câu thoại của chương trình nào.
