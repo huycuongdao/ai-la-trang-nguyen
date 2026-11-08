@@ -1,4 +1,6 @@
 import type { View } from '../engine/exam';
+import type { ElimView } from '../engine/elimination';
+import { isElimView, type AnyView } from '../engine/view-types';
 
 /**
  * Âm thanh kiểu khoa cử, trình duyệt tự tạo (không cần file, không lo bản quyền). Chỉ phát ở trang stage.
@@ -180,7 +182,34 @@ class Sfx {
   private lastMo = -1;
 
   /** So ảnh chụp trước và sau để phát tiếng đúng lúc */
-  watch(a: View | null, b: View, speaking: boolean) {
+  watch(a: AnyView | null, b: AnyView, speaking: boolean) {
+    if (isElimView(b)) return this.watchLoai(a && isElimView(a) ? a : null, b, speaking);
+    this.watchThi(a && !isElimView(a) ? a : null, b, speaking);
+  }
+
+  /** Chế độ loại trực tiếp: cùng ý nghĩa các pha, chỉ có 5 giây trả lời nên nhạc dồn ngay từ đầu */
+  private watchLoai(a: ElimView | null, b: ElimView, speaking: boolean) {
+    const mode: Mode = b.phase === 'vinhDanh' ? 'tat' : b.phase === 'hoi' ? 'gap' : b.phase === 'cho' ? 'vui' : 'lang';
+    this.music(mode, speaking && mode !== 'gap', 0);
+    if (!a) return;
+    if (b.phase === 'hoi' && a.phase !== 'hoi') this.play('hien', 300);
+    if (b.phase === 'hoi' && b.soNop > a.soNop) this.play('nop', 180);
+    if (b.phase === 'hoi' && b.con <= b.tongGiay && b.con >= 1 && b.con !== this.lastMo) {
+      this.lastMo = b.con;
+      this.play('mo', 0);
+    }
+    if (b.phase !== 'hoi') this.lastMo = -1;
+    if (b.phase === 'chot' && a.phase !== 'chot') this.play('donTrong', 500);
+    if (b.phase === 'dapAn' && a.phase !== 'dapAn') {
+      this.play('chieng', 300);
+      setTimeout(() => this.play(b.ketQua?.soDung ? 'dung' : 'truot', 300), 450);
+    }
+    if (b.phase === 'vinhDanh' && a.phase !== 'vinhDanh') this.play('phao', 1000);
+    if (b.top.length && !a.top.length) this.play('trong', 500); // mở bảng top
+    if (b.qua && b.qua.at !== a.qua?.at) this.play(b.qua.big ? 'phao' : 'qua', 300);
+  }
+
+  private watchThi(a: View | null, b: View, speaking: boolean) {
     const mode: Mode =
       b.phase === 'vinhQuy' ? 'tat'
       : b.phase === 'hoi' ? (b.con <= 5 ? 'gap' : 'hoi')

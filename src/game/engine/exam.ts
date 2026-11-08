@@ -3,6 +3,9 @@
 import { GAME, type Level, type Vong } from '../config';
 import { doanGioi, lenhGioi, lenhMien, type Gioi, type Mien } from './viewer-traits';
 import { sinhToan } from './math-question';
+import { GiftBanner, type Qua } from './gift-banner';
+
+export type { Qua } from './gift-banner';
 
 export interface McQ {
   id: string;
@@ -143,7 +146,7 @@ export interface RoomSnapshot {
   khach: { id: string; name: string }[];
 }
 
-const shuffle = <T,>(a: T[], rand: () => number) => {
+export const shuffle = <T,>(a: T[], rand: () => number) => {
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(rand() * (i + 1));
     [a[i], a[j]] = [a[j], a[i]];
@@ -180,7 +183,7 @@ export class KyThi {
   private mienBaoCau = 0;
 
   // ---------- quà: mỗi lần hiện 1 băng rôn, người khác xếp hàng (quà KHÔNG cho lợi thế trong game) ----------
-  private quaCho: Qua[] = [];
+  private banner = new GiftBanner();
   private nhacDa = false; // đã nhắc giữa giờ ở câu này chưa
   private khach: { id: string; name: string }[] = []; // người bình luận gần đây nhất
 
@@ -192,28 +195,13 @@ export class KyThi {
     for (const k of this.khach) if (!coGhe.has(k.id) && !ds.includes(k.name)) ds.push(k.name);
     return ds.slice(0, GAME.soTre);
   }
-  qua: (Qua & { den: number }) | null = null;
+  get qua() {
+    return this.banner.hien;
+  }
 
   /** Có người tặng quà. Cùng người tặng liên tục thì gộp vào băng rôn đang chờ. */
   tangQua(q: Omit<Qua, 'at'>, now: number) {
-    const cu = this.qua?.id === q.id && this.qua.gift === q.gift ? this.qua : this.quaCho.find((x) => x.id === q.id && x.gift === q.gift);
-    if (cu) {
-      cu.count += q.count;
-      cu.coins += q.coins;
-      cu.big ||= q.big;
-      return;
-    }
-    this.quaCho.push({ ...q, at: now });
-    // quà to chen lên trước; hàng chờ có trần, quá thì bỏ quà nhỏ cũ nhất
-    this.quaCho.sort((a, b) => Number(b.big) - Number(a.big));
-    if (this.quaCho.length > 6) this.quaCho.pop(); // đã xếp quà to lên đầu nên cuối hàng là quà nhỏ mới nhất
-    this.chayQua(now);
-  }
-
-  private chayQua(now: number) {
-    if (this.qua && now < this.qua.den) return;
-    const q = this.quaCho.shift();
-    this.qua = q ? { ...q, at: now, den: now + (q.big ? GAME.quaToSec : GAME.quaSec) * 1000 } : null;
+    this.banner.tang(q, now);
   }
 
   constructor(
@@ -251,8 +239,8 @@ export class KyThi {
       dauTruoc: this.dauTruoc,
       dauBaoCau: this.dauBaoCau,
       mienBaoCau: this.mienBaoCau,
-      quaCho: this.quaCho,
-      qua: this.qua,
+      quaCho: this.banner.cho,
+      qua: this.banner.hien,
       nhacDa: this.nhacDa,
       khach: this.khach,
     });
@@ -295,8 +283,8 @@ export class KyThi {
     this.dauTruoc = d.dauTruoc;
     this.dauBaoCau = d.dauBaoCau;
     this.mienBaoCau = d.mienBaoCau;
-    this.quaCho = d.quaCho;
-    this.qua = d.qua;
+    this.banner.cho = d.quaCho;
+    this.banner.hien = d.qua;
     this.nhacDa = d.nhacDa;
     this.khach = d.khach;
     return true;
@@ -478,7 +466,7 @@ export class KyThi {
   }
 
   tick(now: number) {
-    this.chayQua(now);
+    this.banner.chay(now);
     // giữa giờ (câu từ 15 giây) ông đồ giục 1 câu, đỡ im lặng
     if (this.phase === 'hoi' && !this.nhacDa && this.vong.giay >= 15 && now >= this.shownAt + this.vong.giay * 500) {
       this.nhacDa = true;
@@ -640,7 +628,7 @@ export class KyThi {
       ketQua: lo ? this.ketQua : null,
       recent: this.recent,
       soSiTu: this.siTu.size,
-      qua: this.qua && { id: this.qua.id, name: this.qua.name, avatar: this.qua.avatar, gift: this.qua.gift, count: this.qua.count, big: this.qua.big, at: this.qua.at },
+      qua: this.banner.view(),
       tuan: this.tuan,
       mien: this.diemMien(),
       latKeo: this.laLatKeo && ['doc', 'hoi', 'chot', 'dapAn'].includes(this.phase),
@@ -656,15 +644,4 @@ export class KyThi {
 }
 
 /** The picture of the game. `audio` is added by the server for stage pages: true on the one page that plays sound. */
-export type View = ReturnType<KyThi['view']> & { audio?: boolean };
-
-export interface Qua {
-  id: string;
-  name: string;
-  avatar: string;
-  gift: string;
-  count: number;
-  coins: number;
-  big: boolean;
-  at: number;
-}
+export type View = ReturnType<KyThi['view']> & { mode?: 'exam'; audio?: boolean };

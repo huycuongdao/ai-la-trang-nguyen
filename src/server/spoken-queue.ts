@@ -1,4 +1,4 @@
-import type { VoiceOut } from './speech-director';
+import type { VoiceOut } from './voice-out';
 
 /**
  * No acknowledgement from the stage for a line that gates the question timer: carry on after this long.

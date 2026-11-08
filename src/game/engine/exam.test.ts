@@ -178,7 +178,7 @@ console.log('toan: OK');
   k5.tick(t3);
   assert.equal(k5.qua, null);
   for (let i = 0; i < 50; i++) k5.tangQua(q('u' + i, 1), t3); // 50 người cùng tặng: hàng chờ có trần
-  assert.ok(k5['quaCho'].length <= 6);
+  assert.ok(k5['banner'].cho.length <= 6);
   console.log('qua: OK');
 }
 

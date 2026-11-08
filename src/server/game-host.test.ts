@@ -5,14 +5,16 @@ import { GAME } from '../game/config';
 import type { Ev, McQ } from '../game/engine/exam';
 import { directRig, GOLDEN_START, goldenRand, loadGoldenBank, mulberry32, runScenario, type Rig } from '../game/engine/golden-scenario';
 import { GameHost, type HostDeps } from './game-host';
+import type { SavedRound } from './hosted-mode';
 import { SPOKEN_ACK_FALLBACK_MS } from './spoken-queue';
 
 type Say = { id?: number; text?: string; priority?: boolean; prefetch?: boolean; stop?: boolean };
 
-function makeHost(bank: McQ[], opts: { stages?: () => number } = {}) {
+function makeHost(bank: McQ[], opts: { stages?: () => number; load?: SavedRound; extra?: Partial<HostDeps> } = {}) {
   const clock = { t: GOLDEN_START };
   const said: Say[] = [];
   const views: unknown[] = [];
+  const saved: SavedRound[] = [];
   const deps: HostDeps = {
     bank,
     now: () => clock.t,
@@ -28,12 +30,13 @@ function makeHost(bank: McQ[], opts: { stages?: () => number } = {}) {
     saveUsed: () => {},
     addWeekly: () => [],
     weeklyTop: () => [],
-    loadRoom: () => null,
-    saveRoom: () => {},
+    loadRoom: () => opts.load ?? null,
+    saveRoom: (snap) => saved.push(snap),
+    ...opts.extra,
   };
   const host = new GameHost(deps);
   host.start();
-  return { host, clock, said, views };
+  return { host, clock, said, views, saved };
 }
 
 // ---- 1. The golden round run through the host gives the same ranking, scores and events as the bare engine ----
@@ -149,4 +152,122 @@ function toReading() {
   assert.equal(r.views.length, 1);
   assert.equal((r.views[0] as { phase: string }).phase, 'cho');
 }
+// ---- 6. Elimination mode through the host ----
+type ElimView = {
+  mode: string; phase: string; con: number; conLai: number; soNguoi: number; dung: number;
+  ghe: { id: string; name: string; alive: boolean }[];
+  thang: { name: string } | null;
+};
+const lastView = (views: unknown[]) => views[views.length - 1] as ElimView;
+const chatAs = (host: GameHost, clock: { t: number }, id: string, comment: string) =>
+  host.onLiveEvent('chat', { username: id, nickname: id.toUpperCase(), avatar: '', comment, createTime: clock.t });
+const PLAYERS = ['a', 'b', 'c', 'd'];
+
+function elimToReading() {
+  const r = makeHost(bank);
+  assert.equal(r.host.setMode('elimination'), true); // the exam is waiting, so switching is allowed
+  const step = (ms: number) => {
+    r.clock.t += ms;
+    r.host.tick();
+  };
+  step(250);
+  assert.equal(lastView(r.views).mode, 'elimination');
+  assert.equal(lastView(r.views).phase, 'cho');
+  for (const id of PLAYERS) chatAs(r.host, r.clock, id, 'tham gia'); // sign up in the waiting room
+  step(250);
+  assert.equal(lastView(r.views).soNguoi, 4);
+  r.host.command('custom', 'batdau');
+  for (let i = 0; i < 40 && !r.said.some((s) => s.text?.startsWith('Câu 1.')); i++) step(250);
+  const line = r.said.find((s) => s.id && s.text?.startsWith('Câu 1.'));
+  assert.ok(line, 'question line sent to the stage');
+  return { ...r, step, line: line! };
+}
+
+// the 5 s clock starts only after the question has been read aloud
+{
+  const { host, step, views, line } = elimToReading();
+  for (let i = 0; i < 20; i++) step(250); // 5 s later: still reading
+  assert.equal(lastView(views).phase, 'doc');
+  assert.equal(host.spoken(line.id!), true);
+  step(0);
+  assert.equal(lastView(views).phase, 'hoi');
+  assert.equal(lastView(views).con, 5);
+  assert.equal(host.spoken(line.id!), false); // a repeated acknowledgement does nothing
+}
+
+// a full game: four players answer A, B, C, D, so exactly one is right; the other three are out and the right one wins
+{
+  const { host, clock, step, views, line } = elimToReading();
+  host.spoken(line.id!);
+  step(250);
+  PLAYERS.forEach((id, i) => chatAs(host, clock, id, 'ABCD'[i]));
+  for (let i = 0; i < 80 && lastView(views).phase !== 'dapAn'; i++) step(250);
+  const v = lastView(views);
+  assert.equal(v.phase, 'dapAn');
+  assert.equal(v.conLai, 1);
+  assert.equal(v.ghe.filter((g) => !g.alive).length, 3); // the three losers are still drawn during the reveal
+  const winner = PLAYERS[v.dung].toUpperCase();
+  for (let i = 0; i < 80 && lastView(views).phase !== 'vinhDanh'; i++) step(250);
+  assert.equal(lastView(views).phase, 'vinhDanh');
+  assert.equal(lastView(views).thang?.name, winner);
+  assert.equal(lastView(views).ghe.filter((g) => g.alive).length, 1); // one player is left on the mat
+}
+
+// switching mode is refused while a game runs, unless forced
+{
+  const { host, step, views } = elimToReading();
+  assert.equal(host.setMode('exam'), false);
+  host.command('custom', 'mode:exam');
+  assert.equal(host.mode, 'elimination');
+  step(250);
+  assert.equal(lastView(views).mode, 'elimination');
+  assert.equal(host.setMode('exam', true), true);
+  assert.equal(host.mode, 'exam');
+  step(250);
+  assert.equal(lastView(views).mode, 'exam');
+  assert.equal(lastView(views).phase, 'cho');
+  // and the other way round: a running exam game cannot be switched away from
+  host.command('custom', 'batdau');
+  step(250);
+  assert.equal(host.setMode('elimination'), false);
+  host.command('custom', 'mode:elimination');
+  assert.equal(host.mode, 'exam');
+}
+
+// a restart in the middle of an elimination game resumes that mode and reads the question again
+{
+  const first = elimToReading();
+  const snap = first.saved[first.saved.length - 1];
+  assert.equal(snap.mode, 'elimination');
+  assert.equal(lastView(first.views).phase, 'doc');
+  const again = makeHost(bank, { load: snap });
+  assert.equal(again.host.mode, 'elimination');
+  const reread = again.said.find((s) => s.id && s.text?.startsWith('Câu 1.'));
+  assert.ok(reread, 'the unfinished question is read again');
+  again.host.tick();
+  assert.equal(lastView(again.views).phase, 'doc');
+  again.host.spoken(reread!.id!);
+  again.clock.t += 250;
+  again.host.tick();
+  assert.equal(lastView(again.views).phase, 'hoi');
+}
+// ---- 7. The operator's mode and player cap are remembered and applied at start ----
+{
+  const modes: string[] = [];
+  const caps: number[] = [];
+  const r = makeHost(bank, { extra: { initialMode: 'elimination', initialMaxNguoi: 100, saveMode: (m) => modes.push(m), saveMaxNguoi: (n) => caps.push(n) } });
+  assert.equal(r.host.mode, 'elimination'); // nothing to resume: starts in the remembered mode
+  assert.equal(r.host.cap, 100);
+  r.host.tick();
+  assert.equal((r.views[r.views.length - 1] as { mode: string; maxNguoi: number }).maxNguoi, 100);
+  r.host.command('custom', 'cap:50');
+  assert.equal(r.host.cap, 50);
+  assert.deepEqual(caps, [50]);
+  r.host.command('custom', 'cap:abc'); // ignored
+  assert.deepEqual(caps, [50]);
+  r.host.command('custom', 'mode:exam');
+  assert.equal(r.host.mode, 'exam');
+  assert.deepEqual(modes, ['exam']);
+}
+
 console.log('game-host: OK');

@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import type { SayEvent } from '../../live/types';
 import { voice } from '../../live/utils/voice';
 import type { Role } from '../../live/context/RoleContext';
-import type { View } from '../engine/exam';
+import type { AnyView } from '../engine/view-types';
 import { sfx } from '../audio/sfx';
 import { post } from '../utils/stage-api';
 
@@ -14,7 +14,7 @@ import { post } from '../utils/stage-api';
  */
 export function useStageAudio(role: Role) {
   const isStage = role.role === 'stage';
-  const prev = useRef<View | null>(null);
+  const prev = useRef<AnyView | null>(null);
 
   // Sound effects and music follow the game picture
   useEffect(() => {
@@ -30,7 +30,7 @@ export function useStageAudio(role: Role) {
     voice.say(s.text, s.priority, () => void post('/api/game/spoken', { id: s.id }));
   };
 
-  const onView = (v: View) => {
+  const onView = (v: AnyView) => {
     if (!isStage) return;
     if (v.audio) sfx.watch(prev.current, v, voice.busy);
     else sfx.music('tat', false); // trang phụ: tắt nhạc

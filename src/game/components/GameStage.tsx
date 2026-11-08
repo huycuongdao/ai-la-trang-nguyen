@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react';
 import type { GameState } from '../hooks/useGame';
 import type { Hang, View } from '../engine/exam';
+import { isElimView } from '../engine/view-types';
 import { GAME } from '../config';
 
 /**
@@ -17,7 +18,7 @@ const PANEL = 'rgba(38,18,8,.80)';
 
 export function GameStage({ game }: { game: GameState }) {
   const v = game.view;
-  if (!v) return <div className="absolute inset-0" />;
+  if (!v || isElimView(v)) return <div className="absolute inset-0" />;
   const bigBoard = v.phase === 'bangVang' || v.phase === 'vinhQuy';
   return (
     <div className="absolute inset-0 select-none" style={{ color: CREAM }}>
@@ -210,6 +211,22 @@ function DanLang() {
 // ---------------- bảng đen, mái tranh ----------------
 
 /** Trên mái tranh: "CÂU 12/20" + tiến độ 4 kỳ, tên kỳ thi, đồng hồ */
+/** Tên game treo giữa mái tranh, chữ tự co cho vừa khung */
+export function TenGame({ tieuDe }: { tieuDe: string }) {
+  return (
+  <div className="absolute flex items-center justify-center gap-3 whitespace-nowrap rounded-[18px] px-3 text-center font-extrabold" style={{
+    left: 372, top: 352, width: 540, height: 96, fontSize: Math.max(22, Math.min(42, Math.floor(410 / ([...tieuDe].length * (tieuDe === tieuDe.toUpperCase() ? 0.74 : 0.6))))), // tự co cho vừa khung (chữ in hoa rộng hơn)
+    border: `4px double ${GOLD}`, outline: '2px solid #3a0d05',
+    background: 'linear-gradient(#8a2a14,#4f1309)', color: '#ffd977', textShadow: '0 3px 0 #3a0d05, 0 0 16px rgba(255,211,77,.55)',
+    boxShadow: '0 8px 22px rgba(0,0,0,.5), inset 0 0 18px rgba(255,200,90,.25)',
+  }}>
+    <span className="text-[34px]">🏮</span>
+    <span className="truncate py-2" style={{ lineHeight: 1.45 }}>{tieuDe}</span>
+    <span className="text-[34px]">🏮</span>
+  </div>
+  );
+}
+
 function DongCau({ v, tieuDe }: { v: View; tieuDe: string }) {
   const showTimer = v.phase === 'hoi';
   const low = showTimer && v.con <= 5;
@@ -235,17 +252,7 @@ function DongCau({ v, tieuDe }: { v: View; tieuDe: string }) {
       >
         {v.phase === 'cho' ? 'SẮP THI' : v.latKeo ? 'LẬT KÈO ×2' : v.vongNhan}
       </div>
-      {/* tên game treo giữa mái tranh */}
-      <div className="absolute flex items-center justify-center gap-3 whitespace-nowrap rounded-[18px] px-3 text-center font-extrabold" style={{
-        left: 372, top: 352, width: 540, height: 96, fontSize: Math.max(22, Math.min(42, Math.floor(410 / ([...tieuDe].length * (tieuDe === tieuDe.toUpperCase() ? 0.74 : 0.6))))), // tự co cho vừa khung (chữ in hoa rộng hơn)
-        border: `4px double ${GOLD}`, outline: '2px solid #3a0d05',
-        background: 'linear-gradient(#8a2a14,#4f1309)', color: '#ffd977', textShadow: '0 3px 0 #3a0d05, 0 0 16px rgba(255,211,77,.55)',
-        boxShadow: '0 8px 22px rgba(0,0,0,.5), inset 0 0 18px rgba(255,200,90,.25)',
-      }}>
-        <span className="text-[34px]">🏮</span>
-        <span className="truncate py-2" style={{ lineHeight: 1.45 }}>{tieuDe}</span>
-        <span className="text-[34px]">🏮</span>
-      </div>
+      <TenGame tieuDe={tieuDe} />
       {showTimer && (
         <motion.div
           key={low ? `${v.cauSo}-${v.con}` : v.cauSo}
@@ -425,7 +432,7 @@ const MANH = Array.from({ length: 40 }, (_, i) => ({
   w: 14 + (i % 3) * 6,
   color: ['#c8102e', '#ffd34d', '#e8a33d', '#ff5a3c'][i % 4],
 }));
-function PhaoGiay() {
+export function PhaoGiay() {
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden" style={{ zIndex: 3000 }}>
       {MANH.map((m, i) => (
@@ -540,7 +547,7 @@ function BangNho({ v }: { v: View }) {
 }
 
 /** Băng rôn cảm ơn quà: trượt xuống trên cùng (không che câu hỏi) */
-function BangQua({ v }: { v: View }) {
+export function BangQua({ v }: { v: Pick<View, 'qua'> }) {
   const q = v.qua;
   return (
     <AnimatePresence>
@@ -612,7 +619,7 @@ function BangVang({ v }: { v: View }) {
 }
 
 /** Ảnh đại diện TikTok, viền vàng; không có ảnh thì hiện chữ cái đầu */
-function Avatar({ h, size }: { h: { name: string; avatar: string }; size: number }) {
+export function Avatar({ h, size }: { h: { name: string; avatar: string }; size: number }) {
   const box = { width: size, height: size, borderColor: GOLD };
   return h.avatar ? (
     <img src={h.avatar} referrerPolicy="no-referrer" className="shrink-0 rounded-full border-[3px] object-cover" style={box} draggable={false} />
@@ -647,9 +654,9 @@ function TamKhoi({ h, left, top, imgH, delay, big }: { h: Hang; left: number; to
 const HOST_FILE: Record<string, string> = { mung: 'cheer', 'suy-nghi': 'think', chi: 'point', cuoi: 'smile', tiec: 'regret' };
 
 /** Ông đồ đứng cạnh bảng đen, bên trái trước gốc đa; đổi tư thế theo pha */
-function MC({ v, ten }: { v: View; ten: string }) {
+export function MC({ v, ten }: { v: { phase: string; ketQua: { soDung: number } | null }; ten: string }) {
   const pose =
-    v.phase === 'vinhQuy' ? 'mung'
+    v.phase === 'vinhQuy' || v.phase === 'vinhDanh' ? 'mung'
     : v.phase === 'dapAn' ? (v.ketQua?.soDung ? 'mung' : 'tiec')
     : v.phase === 'hoi' ? 'suy-nghi'
     : v.phase === 'doc' || v.phase === 'bangVang' ? 'chi'

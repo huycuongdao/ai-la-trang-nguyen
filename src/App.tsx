@@ -6,6 +6,9 @@ import { voice } from './live/utils/voice';
 import { sfx } from './game/audio/sfx';
 import { useGame } from './game/hooks/useGame';
 import { GameStage } from './game/components/GameStage';
+import { EliminationStage } from './game/components/EliminationStage';
+import { isElimView } from './game/engine/view-types';
+import type { GameState } from './game/hooks/useGame';
 import { GameControls } from './game/components/GameControls';
 
 export default function App() {
@@ -24,7 +27,7 @@ export default function App() {
           sfx.resume();
         }}>
         <StageFrame>
-          <GameStage game={game} />
+          <GameScreen game={game} />
         </StageFrame>
         {/* Chrome chặn tiếng tới khi bấm vào trang. LIVE Studio không chặn nên nút này không hiện trên live. */}
         {blocked && (
@@ -44,9 +47,14 @@ export default function App() {
       extra={<GameControls />}
       preview={
         <StageFrame maxHeight={720}>
-          <GameStage game={game} />
+          <GameScreen game={game} />
         </StageFrame>
       }
     />
   );
+}
+
+/** The picture depends on the mode the server is running */
+function GameScreen({ game }: { game: GameState }) {
+  return game.view && isElimView(game.view) ? <EliminationStage game={game} /> : <GameStage game={game} />;
 }

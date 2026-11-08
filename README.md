@@ -15,6 +15,7 @@ Game chạy trên máy tính của bạn, gắn vào TikTok LIVE Studio như m�
 - **Quà**: băng rôn có avatar và tên người tặng, quà từ 99 xu có pháo giấy. Quà **không cho lợi thế gì trong game**, đúng quy định TikTok.
 - **Âm thanh tự tạo**: nhạc nền đàn tranh, trống dồn lúc hết giờ, chiêng lúc công bố, pháo lúc vinh quy. Không dùng nhạc có bản quyền.
 - **Sân thi đầu làng**: câu hỏi viết phấn lên bảng đen dưới mái tranh. Ai nộp bài thì được ngồi một bàn, tên hiện trên đầu, điểm cao ngồi các hàng giữa. Ai chưa có ghế thì tên hiện trên đám trẻ con chạy lên chạy xuống lối giữa. Hai bên sân có các cụ ngồi xem, cây đa đung đưa, lá rơi lác đác. Chữ trên mái tranh và tên ông đồ đổi được ở trang điều khiển.
+- **Chế độ thứ hai: Loại trực tiếp (X50 / X100)**: 50 hoặc 100 người cùng chơi, mỗi câu 5 giây, sai hoặc không trả lời là bị loại, người cuối cùng thắng. Chọn chế độ ở trang điều khiển. Xem mục "Chế độ loại trực tiếp" bên dưới.
 - **Chạy cả buổi**: hết ván tự sang ván mới; mất kết nối TikTok thì tự kết nối lại.
 
 ## Chạy nhanh (cho dev)
@@ -104,6 +105,17 @@ Trên trang điều khiển có các nút **Giả lập 1 người / 60 người
 | `khó quá`, `dễ quá`, `chào ông đồ`, `haha`... | Ông đồ có thể trêu lại vào lúc rảnh |
 
 Đáp án gõ **lúc ông đồ còn đang đọc đề** (4 ô chưa hiện) thì không tính. Người chơi không mất lượt, gõ lại sau khi 4 ô hiện ra là được.
+
+## Chế độ loại trực tiếp
+
+Một chế độ chơi khác, chọn ở trang điều khiển (đổi chế độ sẽ kết thúc ván đang chơi, game nhớ lựa chọn cho lần bật sau).
+
+- **Ghi tên**: trong phòng chờ, người xem gõ A, B, C, D hoặc "tham gia". Tối đa 50 hoặc 100 người (chọn ở trang điều khiển).
+- **Mỗi câu 5 giây** sau khi ông đồ đọc xong đề. Trả lời sai hoặc không trả lời là bị loại. Nếu cả phòng không ai đúng thì không ai bị loại. Vào chơi lúc nào cũng được.
+- **Còn 5 người trở xuống**: hiện bảng top kèm thời gian trả lời trung bình. Người xem gõ số 1 đến 5 để chọn người ủng hộ, rồi tặng hoa hoặc bóng bay để bình chọn. Phiếu chỉ quyết định khi hết số câu tối đa mà hai người sát nhau.
+- **Người cuối cùng** thắng, được vinh danh. Muốn chơi ván mới thì cả phòng thả tim (miễn phí); quá 2 phút game tự mở ván mới.
+
+Số liệu (số người, thời gian, độ khó, số tim, tên quà tính phiếu) nằm ở `src/game/elimination-config.ts`; xem `CLAUDE.md` để biết đầy đủ.
 
 ## Nút trên trang điều khiển
 

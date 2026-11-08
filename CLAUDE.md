@@ -5,7 +5,7 @@
 
 ## Ý tưởng
 
-Game show trắc nghiệm cho TikTok LIVE theo không khí khoa cử xưa. Ông đồ cầm mic làm quan chủ khảo, người xem gõ A, B, C, D vào bình luận. Một ván 20 câu qua 4 kỳ thi, cuối ván 3 người cao điểm nhất đỗ Trạng Nguyên, Bảng Nhãn, Thám Hoa. Lấy cảm hứng từ Ai là triệu phú nhưng không dùng tên, giao diện, nhạc hay câu thoại của show đó.
+Game show trắc nghiệm cho TikTok LIVE, lấy cảm hứng từ khoa cử ngày xưa. Ông đồ cầm mic làm quan chủ khảo, người xem gõ A, B, C, D vào bình luận. Một ván 20 câu qua 4 kỳ thi, cuối ván 3 người cao điểm nhất đỗ Trạng Nguyên, Bảng Nhãn, Thám Hoa. Lấy cảm hứng từ Ai là triệu phú nhưng không dùng tên, giao diện, nhạc hay câu thoại của show đó.
 
 ## Luật chơi
 
@@ -74,3 +74,14 @@ Game show trắc nghiệm cho TikTok LIVE theo không khí khoa cử xưa. Ông 
 - Sĩ tử (2026-11-08): ai đã nộp bài được ngồi bàn (tối đa `soGhe` 31, ngồi từ hàng đầu), điểm cao ngồi các hàng giữa trước. Quay LƯNG ra khán giả (ảnh vật lưng back-male / back-female của chủ kênh), chỉ lộ nửa người trên khỏi mặt bàn, bảng tên trên đầu tự thu nhỏ chữ cho vừa (tên quá dài mới cắt). Dùng cách một hàng bàn để bảng tên hàng trước không che mặt hàng sau. Lúc công bố người đúng nhảy lên, điểm +/- bay trên đầu. Ảnh: `art-source/villagers/` → `node tools/cut-characters.mjs` → `public/assets/characters/villagers/`.
 - Cảnh vật (2026-11-08): ông đồ bên trái bảng đen có bảng tên (đổi được); 6 cụ: già làng + ông cầm quạt ở sân trống bên phải cạnh cột bảng, bà nón + bà cuốc mép phải, ông gậy + bà ôm gói mép trái dưới ông đồ; đám 6 đứa trẻ yếm đỏ chạy lên xuống lối giữa, mỗi đứa mang tên 1 người chưa có ghế (người thi mà hết ghế, rồi người vừa bình luận), `soTre` 6; tán đa lắc nhẹ theo gió, lá đa rơi lác đác.
 - Trang điều khiển có ô sửa "Chữ trên mái tranh" và "Tên ông đồ" (lưu settings.json qua /api/cai-dat, để trống = mặc định trong config.ts). Sửa server nên phải tắt bật lại start-live mới có.
+
+## Chế độ "Loại trực tiếp" (X50 / X100)
+
+Chế độ thứ hai, chạy cạnh chế độ thi; chọn ở trang điều khiển (đổi chế độ sẽ kết thúc ván đang chơi). Ý tưởng của PM nằm ở `docs/game-idea.txt`; kế hoạch ở `plans/261108-2012-elimination-mode-x50-x100/`.
+
+- Luật (số liệu ở `src/game/elimination-config.ts`, đối tượng `LOAI`): phòng chờ 45 giây, gõ A-D hoặc "tham gia" để ghi tên; tối đa 50 hoặc 100 người (chọn ở trang điều khiển, lưu settings.json); ít hơn 2 người thì chờ thêm. Mỗi câu 5 giây (tính sau khi ông đồ đọc xong đề, như chế độ thi). Sai hoặc không trả lời là bị loại; **không ai đúng thì không ai bị loại**. Vào lúc nào cũng được (người mới trả lời đúng thì ở lại); đã bị loại thì bài không còn được tính. Độ khó theo số thứ tự câu: 1-5 `de`, 6-10 `vua`, 11-15 `kho`, từ 16 xen `dinh` / `meo`. Còn 1 người là thắng; hết 30 câu (`maxCau`) mà còn nhiều người thì ai có thời gian đúng trung bình ngắn nhất thắng.
+- Còn ≤ 5 người: hiện bảng top với số 1-5 (cố định lúc mở bảng) và thời gian trung bình. Người xem gõ số rồi tặng **hoa / bóng bay** (`LOAI.quaBinhChon`, so tên quà chữ thường; phải sửa theo `giftName` thật khi diễn tập) là bình chọn. Phiếu chỉ quyết định khi hết 30 câu mà hai người cách nhau chưa tới 300 ms (`veTuongDuongMs`), và người nhiều phiếu nhất được danh hiệu "được yêu quý nhất". Tắt hẳn bằng `LOAI.veVote = false`.
+- Sau ván: chờ cả phòng thả đủ 200 tim (`timTiepTuc`) rồi mới mở phòng chờ; quá 120 giây (`choToiDaSec`) thì tự mở để buổi live không bị đứng.
+- File: `src/game/engine/elimination.ts` (lõi `LoaiTru`, không React), `elimination-config.ts` (số liệu + lời ông đồ), `engine/gift-banner.ts` (băng rôn quà dùng chung hai chế độ), `src/server/hosted-mode.ts` (giao diện chung của chế độ), `mode-runners.ts` (đăng ký chế độ thêm), `elimination-director.ts` (ông đồ nói gì), `viewer-reactions.ts` (chào, cảm ơn quà / follow, chúc, trêu: dùng chung hai chế độ), `src/game/components/EliminationStage.tsx` (màn hình). `GameHost` giữ cả hai chế độ, thêm `mode` vào `view`; `data/room.json` có trường `mode` (thiếu = chế độ thi). Test: `engine/elimination.test.ts` (kèm ván mẫu `fixtures/elimination-golden.json`, cập nhật bằng `--update`).
+- Chế độ này **ngoại lệ** với luật "quà không cho lợi thế": quà hoa / bóng bay có thể quyết định khi hai người sát nhau. Lời mời phải nhẹ nhàng, không ép, không hứa thưởng (nguy cơ vi phạm quy định TikTok về khuyến khích tặng quà). Chế độ thi giữ nguyên luật cũ.
+- Chưa làm: bộ câu hỏi theo từng cuốn sách (phương án 2 của PM); nền "đình làng, chiếu đỏ, cờ" chủ kênh vẽ (hiện là nền sân thi với chiếu đỏ vẽ bằng CSS, đổi một hằng số khi có ảnh).

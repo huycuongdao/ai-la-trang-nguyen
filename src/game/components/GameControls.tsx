@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { emitTest, sendControl } from '../../live/utils/page';
 import { GAME } from '../config';
+import { LOAI } from '../elimination-config';
 
 const HO = ['Minh', 'Lan', 'Tuấn', 'Hoa', 'Long', 'Thảo', 'Nam', 'Vy', 'Khánh', 'An', 'Bình', 'Trang', 'Hùng', 'My', 'Phúc'];
 
@@ -17,6 +18,94 @@ function giaLap(n: number, trongMs: number) {
       });
     }, Math.random() * trongMs);
   }
+}
+
+type Mode = 'exam' | 'elimination';
+
+/** Người chơi giả cố định (cùng một nhóm qua nhiều câu) để thử chế độ loại trực tiếp */
+function giaLapNhom(n: number, comment: (i: number) => string, trongMs: number) {
+  for (let i = 1; i <= n; i++) {
+    setTimeout(() => {
+      emitTest('chat', {
+        username: `sim${i}`,
+        nickname: `${HO[i % HO.length]}_${i}`,
+        comment: comment(i),
+        createTime: Date.now() - 300 - Math.random() * 500,
+      });
+    }, Math.random() * trongMs);
+  }
+}
+
+/** Chọn chế độ chơi + số người tối đa + nút thử cho chế độ loại trực tiếp */
+function ModeControls() {
+  const btn = 'rounded-xl px-4 py-2 font-semibold';
+  const [mode, setMode] = useState<Mode | ''>('');
+  const [cap, setCap] = useState(LOAI.maxNguoi);
+  const [dang, setDang] = useState(false);
+  const lam = () =>
+    fetch('/api/game/mode').then((r) => r.json()).then((c) => {
+      setMode(c.mode);
+      if (typeof c.maxNguoi === 'number') setCap(c.maxNguoi);
+    }).catch(() => {});
+  useEffect(() => {
+    lam();
+    const id = setInterval(lam, 2000);
+    return () => clearInterval(id);
+  }, []);
+  // kết thúc ván đang chơi rồi chuyển chế độ (chỉ chuyển được lúc đang chờ ván)
+  const doi = async (m: Mode) => {
+    if (m === mode) return;
+    setDang(true);
+    await sendControl('reset');
+    await sendControl('custom', `mode:${m}`);
+    await lam();
+    setDang(false);
+  };
+  const datCap = async (n: number) => {
+    setCap(n);
+    await sendControl('custom', `cap:${n}`);
+  };
+  const chon = (on: boolean) => (on ? 'bg-amber-600 text-white' : 'bg-white/10 text-white');
+  return (
+    <div className="space-y-2 rounded-xl bg-black/20 p-3">
+      <div className="text-sm text-white/60">Chế độ chơi (đổi sẽ kết thúc ván đang chơi):</div>
+      <div className="flex flex-wrap gap-2">
+        <button disabled={dang} className={`${btn} ${chon(mode === 'exam')}`} onClick={() => doi('exam')}>🏮 Thi Trạng Nguyên (20 câu)</button>
+        <button disabled={dang} className={`${btn} ${chon(mode === 'elimination')}`} onClick={() => doi('elimination')}>⚔️ Loại trực tiếp</button>
+      </div>
+      {mode === 'elimination' && (
+        <>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-sm text-white/60">Số người tối đa (từ ván sau):</span>
+            {[50, 100].map((n) => (
+              <button key={n} className={`${btn} ${chon(cap === n)}`} onClick={() => datCap(n)}>{n} người</button>
+            ))}
+          </div>
+          <div className="text-sm text-white/60">Giả lập loại trực tiếp (người chơi cố định sim1, sim2...):</div>
+          <div className="flex flex-wrap gap-2">
+            {[50, 100].map((n) => (
+              <button key={n} className={`${btn} bg-white/10 text-white`} onClick={() => giaLapNhom(n, () => 'tham gia', 4000)}>Đăng ký {n} người</button>
+            ))}
+            <button className={`${btn} bg-white/10 text-white`} onClick={() => giaLapNhom(cap, () => 'ABCD'[Math.floor(Math.random() * 4)], 3500)}>Cả nhóm trả lời ngẫu nhiên</button>
+            <button className={`${btn} bg-white/10 text-white`} onClick={() => emitTest('like', { username: 'sim1', nickname: 'sim1', likeCount: LOAI.timTiepTuc })}>Thả {LOAI.timTiepTuc} tim</button>
+            <button
+              className={`${btn} bg-white/10 text-white`}
+              onClick={() => {
+                giaLapNhom(20, () => String(1 + Math.floor(Math.random() * LOAI.topN)), 800);
+                setTimeout(() => {
+                  for (let i = 1; i <= 20; i++) {
+                    emitTest('gift', { username: `sim${i}`, nickname: `sim${i}`, giftName: 'Rose', giftId: 1, diamondCount: 1, repeatCount: 1 });
+                  }
+                }, 1500);
+              }}
+            >
+              Bình chọn thử (20 người, hoa)
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
 }
 
 /** Nút riêng của game trên trang điều khiển */
@@ -53,6 +142,7 @@ export function GameControls() {
         <button className={`${btn} bg-emerald-700 text-white`} onClick={luu}>💾 Lưu tên</button>
         <span className="text-sm text-white/60">{daLuu || 'Để trống là dùng tên mặc định'}</span>
       </div>
+      <ModeControls />
       <div className="flex flex-wrap gap-2">
         <button className={`${btn} bg-amber-600 text-white`} onClick={() => sendControl('custom', 'batdau')}>
           ▶ Bắt đầu ván mới ngay

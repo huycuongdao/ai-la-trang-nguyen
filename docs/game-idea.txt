@@ -1,0 +1,37 @@
+TÊN GAME: X100 HOẶC X50 (TỦY QUY MÔ)
+
+50 HOẶC 100 NGƯỜI VÀO CHƠI, 
+- Hệ thống xác nhận tên 50 người vào chơi và nhận tín hiệu câu trả lời từ 50 người đó.
+- Câu hỏi dạng chọn A-B-C-D | THỜI GIAN 5S ĐẾM NGƯỢC MỖI CÂU
+
+============
+PHƯƠNG ÁN 1: CÂU HỎI LÀ KIẾN THỨC MỌI LĨNH VỰC.
+
+Câu 1: 5s đếm ngược
+Ai đúng ở lại. (Hệ thống cập nhập người bị loại, và chỉ nhận tín hiệu từ người còn lại sau câu 1)
+Ai sai bị loại
+
+Câu 2: Cứ tiếp diễn cho đến khi còn người chơi cuối cùng:
+
+PHƯƠNG ÁN 2: MỖI GAME TẬP HỢP CÁC CÂU LIÊN QUAN ĐẾN NỘI DUNG TRONG 1 CUỐN SÁCH CỤ THỂ:
+Ví dụ game 1: SÁCH ĐẮC NHÂN TÂM:
+Tổng hợp tất cả câu hỏi lấy từ nội dung trong sách này để hỏi:
++ Ưu điểm: 
+- Sẽ tập hợp được những fan của sách đó, tạo tệp người chơi uy tín cho game
+- Những người chưa đọc sẽ tò mò sách
+- Nhà xuất bản sẽ chủ động hợp tác để giới thiệu sách cho họ (Chủ đề sách nào, sẽ trưng sách đó xuyên suốt game)
+
+NOTE 1:
+- Giao diện như ngồi trong đình làng, trải tấm chiếu màu đỏ như thời xưa, treo cờ VN xung quanh, có vị trí 50 người ngồi, hiện tên.
+- Sau mỗi câu, người chơi nào thua thì biến mất.
+- Khi còn top 5 trở xuống, thi thu chỗ ngồi lại còn 1-2-3-4-5 chỗ (mục đích để hiện tên người chơi rõ hơn, người chơi sẽ thích hơn)
+- Người thắng cuối cùng được vinh danh bằng giao diện đặc biệt lên game (Nếu hiệu quả, có thể người chơi được tặng sách - liên hệ nhà sách để người ta tài trợ)
+
+NOTE 2: QUY CHẾ ĐỂ KÍCH THÍCH NGƯỜI XEM TẶNG HOA, QUÀ
+- Khi còn dưới top 5: Hiện 5 người đó lên + bảng thành tích của họ 
+(Hệ thống tổng hợp các câu trước họ trả lời trong thời gian trung bình là bao lâu) Ví dụ: Bạn A: 5s | Bạn B: 7s |
+Người xem sẽ tặng hoa hoặc bong bóng,..... để bình chọn ai là người thắng.
+- Khi hết 1 game: Yêu cầu mọi người muốn chơi tiếp thì lên xxx Tim hoặc xxx Icon gì đó. Đủ sẽ chơi tiếp.
+
+====================
+THỜI GIAN MỖI GAME LÂU | GAME LÀM CHỈN CHU, ĐẸP MẮT => NGƯỜI TA SẼ LUÔN MUỐN CHƠI LIÊN TỤC => TẶNG QUÀ

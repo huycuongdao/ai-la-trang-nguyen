@@ -1,0 +1,221 @@
+{
+  "transitions": [
+    {
+      "phase": "doc",
+      "cauSo": 1,
+      "conLai": 12
+    },
+    {
+      "phase": "hoi",
+      "cauSo": 1,
+      "conLai": 12
+    },
+    {
+      "phase": "chot",
+      "cauSo": 1,
+      "conLai": 12
+    },
+    {
+      "phase": "dapAn",
+      "cauSo": 1,
+      "conLai": 9
+    },
+    {
+      "phase": "doc",
+      "cauSo": 2,
+      "conLai": 9
+    },
+    {
+      "phase": "hoi",
+      "cauSo": 2,
+      "conLai": 9
+    },
+    {
+      "phase": "chot",
+      "cauSo": 2,
+      "conLai": 9
+    },
+    {
+      "phase": "dapAn",
+      "cauSo": 2,
+      "conLai": 5
+    },
+    {
+      "phase": "doc",
+      "cauSo": 3,
+      "conLai": 5
+    },
+    {
+      "phase": "hoi",
+      "cauSo": 3,
+      "conLai": 5
+    },
+    {
+      "phase": "chot",
+      "cauSo": 3,
+      "conLai": 5
+    },
+    {
+      "phase": "dapAn",
+      "cauSo": 3,
+      "conLai": 3
+    },
+    {
+      "phase": "doc",
+      "cauSo": 4,
+      "conLai": 3
+    },
+    {
+      "phase": "hoi",
+      "cauSo": 4,
+      "conLai": 3
+    },
+    {
+      "phase": "chot",
+      "cauSo": 4,
+      "conLai": 3
+    },
+    {
+      "phase": "dapAn",
+      "cauSo": 4,
+      "conLai": 1
+    },
+    {
+      "phase": "vinhDanh",
+      "cauSo": 5,
+      "conLai": 1
+    }
+  ],
+  "events": [
+    {
+      "t": "cho"
+    },
+    {
+      "t": "batDau",
+      "soNguoi": 12
+    },
+    {
+      "t": "doc",
+      "text": "Câu 1. Câu de số 2? A, Sai 1. B, Sai 3. C, Đúng de2. D, Sai 2."
+    },
+    {
+      "t": "chot"
+    },
+    {
+      "t": "dapAn",
+      "chu": "C",
+      "dap": "Đúng de2",
+      "soDung": 9,
+      "soNop": 12,
+      "conLai": 9,
+      "loai": 3,
+      "tenLoai": [
+        "p3",
+        "p7",
+        "p11"
+      ],
+      "khongAiDung": false,
+      "nhanh": "p1",
+      "msNhanh": 500
+    },
+    {
+      "t": "doc",
+      "text": "Câu 2. Câu de số 17? A, Đúng de17. B, Sai 1. C, Sai 2. D, Sai 3."
+    },
+    {
+      "t": "chot"
+    },
+    {
+      "t": "dapAn",
+      "chu": "A",
+      "dap": "Đúng de17",
+      "soDung": 5,
+      "soNop": 8,
+      "conLai": 5,
+      "loai": 4,
+      "tenLoai": [
+        "p2",
+        "p6",
+        "p10"
+      ],
+      "khongAiDung": false,
+      "nhanh": "p1",
+      "msNhanh": 500
+    },
+    {
+      "t": "topNam",
+      "n": 5
+    },
+    {
+      "t": "doc",
+      "text": "Câu 3. Câu de số 34? A, Đúng de34. B, Sai 2. C, Sai 1. D, Sai 3."
+    },
+    {
+      "t": "chot"
+    },
+    {
+      "t": "dapAn",
+      "chu": "A",
+      "dap": "Đúng de34",
+      "soDung": 3,
+      "soNop": 5,
+      "conLai": 3,
+      "loai": 2,
+      "tenLoai": [
+        "p5",
+        "p9"
+      ],
+      "khongAiDung": false,
+      "nhanh": "p1",
+      "msNhanh": 500
+    },
+    {
+      "t": "doc",
+      "text": "Câu 4. Câu de số 18? A, Đúng de18. B, Sai 2. C, Sai 1. D, Sai 3."
+    },
+    {
+      "t": "chot"
+    },
+    {
+      "t": "dapAn",
+      "chu": "A",
+      "dap": "Đúng de18",
+      "soDung": 1,
+      "soNop": 3,
+      "conLai": 1,
+      "loai": 2,
+      "tenLoai": [
+        "p4",
+        "p8"
+      ],
+      "khongAiDung": false,
+      "nhanh": "p1",
+      "msNhanh": 500
+    },
+    {
+      "t": "vinhDanh",
+      "id": "p1",
+      "name": "p1",
+      "avgMs": 500,
+      "soNguoi": 12
+    }
+  ],
+  "winner": {
+    "id": "p1",
+    "name": "p1",
+    "avatar": "",
+    "avgMs": 500
+  },
+  "conLai": 1,
+  "top": [
+    {
+      "so": 1,
+      "id": "p1",
+      "name": "p1",
+      "avatar": "",
+      "alive": true,
+      "avgMs": 500,
+      "phieu": 0
+    }
+  ]
+}

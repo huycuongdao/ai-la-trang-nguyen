@@ -4,7 +4,7 @@ import { readJson, ROOT, writeJsonAtomic } from './store';
 
 // Tên kênh (giọng đọc + tiêu đề) lưu ở settings.json cạnh file này, tắt server mở lại vẫn còn
 const SETTINGS_FILE = path.join(ROOT, 'settings.json');
-type Settings = { channelName?: string; tiktokUser?: string; tieuDe?: string; tenOngDo?: string };
+type Settings = { channelName?: string; tiktokUser?: string; tieuDe?: string; tenOngDo?: string; mode?: 'exam' | 'elimination'; maxNguoi?: number };
 type Control = { action: string; text: string };
 
 let settings: Settings = readJson<Settings>(SETTINGS_FILE) ?? {};
@@ -13,6 +13,10 @@ export const lastControl: { rate: Control | null; name: Control | null } = { rat
 if (typeof settings.channelName === 'string' && settings.channelName.trim()) {
   lastControl.name = { action: 'setName', text: settings.channelName.trim() };
 }
+
+/** Chế độ chơi và số người tối đa của chế độ loại trực tiếp lần trước (trống = chế độ thi, mặc định trong elimination-config.ts) */
+export const savedGameMode = () => (settings.mode === 'elimination' ? 'elimination' : 'exam');
+export const savedMaxNguoi = () => (typeof settings.maxNguoi === 'number' ? settings.maxNguoi : undefined);
 
 /** Tài khoản TikTok đã lưu: tắt server bật lại thì tự kết nối */
 export const savedTikTokUser = () => (typeof settings.tiktokUser === 'string' ? settings.tiktokUser : '');

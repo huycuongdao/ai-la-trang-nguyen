@@ -8,6 +8,7 @@ const EXPECTED = [
   "app.get('/api/bang-tuan'",
   "app.get('/api/cai-dat'",
   "app.get('/api/da-hoi'",
+  "app.get('/api/game/mode'",
   "app.get('/api/tiktok/events'",
   "app.get('/api/tiktok/status'",
   "app.get('/api/tts'",
