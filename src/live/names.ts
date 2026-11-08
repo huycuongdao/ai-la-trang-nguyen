@@ -1,4 +1,4 @@
-import { containsBanned } from './bannedWords';
+import { containsBanned } from './banned-words';
 
 /**
  * Tên TikTok -> tên cho giọng đọc (lấy từ Đi Chùa Online, đã chạy thật trên live).

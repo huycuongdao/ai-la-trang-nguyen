@@ -5,7 +5,7 @@
 
 import type { WishTopic } from '../live/chatter';
 
-// Nhóm câu trong các file src/game/cau-hoi/*.txt:
+// Nhóm câu trong các file src/game/questions/*.txt:
 //   [de] khảo hạch · [vua] thi Hương · [kho] thi Hội · [dinh] thi Đình (khó, khoa cử) · [meo] đố mẹo
 export type Level = 'de' | 'vua' | 'kho' | 'dinh' | 'meo';
 

@@ -3,9 +3,9 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { GAME } from './config';
-import { KyThi, parseMc, type Ev } from './thi';
+import { KyThi, parseMc, type Ev } from './exam';
 
-const dir = new URL('./cau-hoi/', import.meta.url);
+const dir = new URL('./questions/', import.meta.url);
 const fixtureUrl = new URL('./fixtures/golden-run.json', import.meta.url);
 
 function mulberry32(seed: number) {
@@ -18,7 +18,13 @@ function mulberry32(seed: number) {
 }
 
 function run() {
-  const files = fs.readdirSync(dir).filter((f) => f.endsWith('.txt')).sort();
+  // Fixed file order (the order the files had when the fixture was recorded), so renames never change the bank order
+  const files = [
+    'geography-vn', 'final-exam-scholars', 'final-mixed', 'animals-plants', 'natural-science', 'history-vn-modern',
+    'history-vn-ancient-medieval', 'riddles-wordplay-folk', 'riddles-logic-situations', 'inventions-arts-sports',
+    'biology-health', 'world', 'culture-food-vn', 'literature-vietnamese',
+  ].map((f) => `${f}.txt`);
+  assert.deepEqual([...files].sort(), fs.readdirSync(dir).filter((f) => f.endsWith('.txt')).sort(), 'question file list changed');
   const bank = files.flatMap((f) => parseMc(fs.readFileSync(new URL(f, dir), 'utf8')));
   const k = new KyThi(bank, {}, mulberry32(20261108));
   let t = 1_700_000_000_000;

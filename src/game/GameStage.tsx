@@ -1,11 +1,11 @@
 import { AnimatePresence, motion } from 'motion/react';
 import type { GameState } from './useGame';
-import type { Hang, View } from './thi';
+import type { Hang, View } from './exam';
 import { GAME } from './config';
 
 /**
- * Màn hình live 1080x1920: sân thi đầu làng, vẽ đè lên ảnh nền public/assets/bg/nen2.jpg
- * (cắt từ nen-ver2.png, phóng 1,12 lần cho rộng rãi). Toạ độ đo trên nen2.jpg:
+ * Màn hình live 1080x1920: sân thi đầu làng, vẽ đè lên ảnh nền public/assets/background/village-yard.jpg
+ * (cắt từ art-source/background/village-yard-source.png, phóng 1,12 lần cho rộng rãi). Toạ độ đo trên village-yard.jpg:
  *   bảng đen x 220-860, y 522-830 · mái tranh y 350-490 · tán đa y 0-350 · sân trống trước bảng y 850-960
  *   các dãy bàn y 1000-1660 (toạ độ từng bàn ở HANG) · lối đi giữa x 455-640 · nhà tranh, hàng rào bên phải x 900+
  * Chừa 250px dưới cùng và mép phải cho giao diện TikTok.
@@ -52,7 +52,7 @@ export function GameStage({ game }: { game: GameState }) {
 // ---------------- sân thi: sĩ tử ngồi bàn, có tên trên đầu ----------------
 
 /**
- * Chỗ ngồi [x giữa bàn, y mép trên mặt bàn, bề rộng bàn], đo trên nen2.jpg.
+ * Chỗ ngồi [x giữa bàn, y mép trên mặt bàn, bề rộng bàn], đo trên village-yard.jpg.
  * Xếp theo thứ tự ưu tiên: điểm cao ngồi các hàng giữa (to, rõ, không bị TikTok che) trước,
  * rồi tới hàng gần khán giả và hàng sát bảng.
  * và các bàn mép phải (x > 950) vì nút TikTok che.
@@ -131,7 +131,7 @@ function SiTu({ h, x, y, w, lo }: { h: Hang; x: number; y: number; w: number; lo
       </AnimatePresence>
       {/* quay lưng ra khán giả, mặt hướng lên bảng đen; chỉ lộ nửa người trên khỏi mặt bàn */}
       <div className="overflow-hidden" style={{ height: hien }}>
-        <img src={`/assets/nv/lang/lung-${h.gioi === 'nu' ? 'nu' : 'nam'}.webp`} draggable={false} className="mx-auto block max-w-none"
+        <img src={`/assets/characters/villagers/back-${h.gioi === 'nu' ? 'female' : 'male'}.webp`} draggable={false} className="mx-auto block max-w-none"
           style={{ height: full, transform: lat ? 'scaleX(-1)' : undefined, filter: 'drop-shadow(0 3px 3px rgba(0,0,0,.35))' }} />
       </div>
     </motion.div>
@@ -159,7 +159,7 @@ function TreCon({ ten }: { ten: string[] }) {
             </div>
           )}
           <div className="tre-lat" style={{ animationDuration: `${t.dur}s`, animationDelay: `${t.delay}s` }}>
-            <img className="tre-nhun" src={`/assets/nv/lang/${t.nu ? 'tre-nu' : 'tre-nam'}.webp`} style={{ height: t.nu ? 118 : 128, animationDelay: `${i * -0.13}s` }} draggable={false} />
+            <img className="tre-nhun" src={`/assets/characters/villagers/${t.nu ? 'child-girl' : 'child-boy'}.webp`} style={{ height: t.nu ? 118 : 128, animationDelay: `${i * -0.13}s` }} draggable={false} />
           </div>
         </div>
       ))}
@@ -181,7 +181,7 @@ const LA = Array.from({ length: 9 }, (_, i) => ({
 function CayDa() {
   return (
     <div className="pointer-events-none absolute inset-0">
-      <div className="cay-rung absolute left-0 top-0" style={{ width: 1080, height: 380, backgroundImage: "url('/assets/bg/nen2.jpg')", backgroundSize: '1080px 1920px', backgroundPosition: 'top left', WebkitMaskImage: 'linear-gradient(#000 70%, transparent)', maskImage: 'linear-gradient(#000 70%, transparent)' }} />
+      <div className="cay-rung absolute left-0 top-0" style={{ width: 1080, height: 380, backgroundImage: "url('/assets/background/village-yard.jpg')", backgroundSize: '1080px 1920px', backgroundPosition: 'top left', WebkitMaskImage: 'linear-gradient(#000 70%, transparent)', maskImage: 'linear-gradient(#000 70%, transparent)' }} />
       {LA.map((l, i) => (
         <svg key={i} className="la-roi absolute" viewBox="0 0 20 30" style={{ left: l.left, top: -40, width: l.size, height: l.size * 1.5, animationDelay: `${l.delay}s`, animationDuration: `${l.dur}s` }}>
           <path d="M10 1 C17 8 18 20 10 29 C2 20 3 8 10 1 Z" fill={l.mau} />
@@ -196,13 +196,13 @@ function CayDa() {
 function DanLang() {
   return (
     <div className="pointer-events-none absolute inset-0">
-      <img className="cu-ngoi absolute" src="/assets/nv/lang/ong-quat.webp" style={{ left: 958, top: 872, height: 140 }} draggable={false} />
-      <img className="cu-ngoi absolute" src="/assets/nv/lang/gia-lang.webp" style={{ left: 870, top: 862, height: 158, animationDelay: '1.3s' }} draggable={false} />
+      <img className="cu-ngoi absolute" src="/assets/characters/villagers/old-man-fan.webp" style={{ left: 958, top: 872, height: 140 }} draggable={false} />
+      <img className="cu-ngoi absolute" src="/assets/characters/villagers/village-chief.webp" style={{ left: 870, top: 862, height: 158, animationDelay: '1.3s' }} draggable={false} />
       {/* thêm các cụ đứng xem dọc mép sân, hai bên dãy bàn */}
-      <img className="cu-ngoi absolute" src="/assets/nv/lang/ba-non.webp" style={{ left: 985, top: 1010, height: 130, animationDelay: '0.6s' }} draggable={false} />
-      <img className="cu-ngoi absolute" src="/assets/nv/lang/ba-cuoc.webp" style={{ left: 990, top: 1140, height: 150, animationDelay: '2s' }} draggable={false} />
-      <img className="cu-ngoi absolute" src="/assets/nv/lang/ong-gay.webp" style={{ left: 6, top: 930, height: 140, animationDelay: '0.9s' }} draggable={false} />
-      <img className="cu-ngoi absolute" src="/assets/nv/lang/ba-om-goi.webp" style={{ left: 0, top: 1080, height: 140, animationDelay: '1.7s' }} draggable={false} />
+      <img className="cu-ngoi absolute" src="/assets/characters/villagers/old-woman-hat.webp" style={{ left: 985, top: 1010, height: 130, animationDelay: '0.6s' }} draggable={false} />
+      <img className="cu-ngoi absolute" src="/assets/characters/villagers/old-woman-hoe.webp" style={{ left: 990, top: 1140, height: 150, animationDelay: '2s' }} draggable={false} />
+      <img className="cu-ngoi absolute" src="/assets/characters/villagers/old-man-cane.webp" style={{ left: 6, top: 930, height: 140, animationDelay: '0.9s' }} draggable={false} />
+      <img className="cu-ngoi absolute" src="/assets/characters/villagers/old-woman-bundle.webp" style={{ left: 0, top: 1080, height: 140, animationDelay: '1.7s' }} draggable={false} />
     </div>
   );
 }
@@ -633,7 +633,7 @@ function TamKhoi({ h, left, top, imgH, delay, big }: { h: Hang; left: number; to
       className="absolute flex flex-col items-center"
       style={{ left, top, width: big ? 340 : 260 }}
     >
-      <img src={`/assets/nv/top/top${h.hang}-${h.gioi}.webp`} style={{ height: imgH, filter: 'drop-shadow(0 10px 12px rgba(0,0,0,.35))' }} draggable={false} />
+      <img src={`/assets/characters/winners/rank${h.hang}-${h.gioi === 'nu' ? 'female' : 'male'}.webp`} style={{ height: imgH, filter: 'drop-shadow(0 10px 12px rgba(0,0,0,.35))' }} draggable={false} />
       <div className="mt-1 flex w-full items-center justify-center gap-2">
         <Avatar h={h} size={big ? 64 : 48} />
         <span className={`${big ? 'text-[40px]' : 'text-[30px]'} min-w-0 truncate font-extrabold text-[#8a1c0c]`}>{h.name}</span>
@@ -642,6 +642,9 @@ function TamKhoi({ h, left, top, imgH, delay, big }: { h: Hang; left: number; to
     </motion.div>
   );
 }
+
+// Pose names are game values; the image files have English names
+const HOST_FILE: Record<string, string> = { mung: 'cheer', 'suy-nghi': 'think', chi: 'point', cuoi: 'smile', tiec: 'regret' };
 
 /** Ông đồ đứng cạnh bảng đen, bên trái trước gốc đa; đổi tư thế theo pha */
 function MC({ v, ten }: { v: View; ten: string }) {
@@ -660,7 +663,7 @@ function MC({ v, ten }: { v: View; ten: string }) {
       <AnimatePresence mode="popLayout">
         <motion.img
           key={pose}
-          src={`/assets/nv/mc/${pose}.webp`}
+          src={`/assets/characters/host/${HOST_FILE[pose]}.webp`}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0 }}

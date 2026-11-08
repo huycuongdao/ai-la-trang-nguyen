@@ -1,5 +1,5 @@
 import { IS_STAGE, MUTE } from './page';
-import { containsBanned } from './bannedWords';
+import { containsBanned } from './banned-words';
 
 /**
  * Hàng đợi giọng đọc. Chỉ phát trên trang stage.

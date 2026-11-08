@@ -3,9 +3,9 @@ import fs from 'fs';
 import { dataPath, writeJsonAtomic } from './store';
 
 // Câu nào hỏi lúc nào, để game ưu tiên câu lâu chưa hỏi (tắt bật server vẫn nhớ)
-const USED_FILE = dataPath('da-hoi.json');
+const USED_FILE = dataPath('used-questions.json');
 // Bảng vàng tuần: cộng điểm mọi ván trong tuần (thứ Hai tới Chủ nhật, giờ máy), sang tuần mới làm lại
-const TUAN_FILE = dataPath('bang-tuan.json');
+const TUAN_FILE = dataPath('weekly-board.json');
 type BangTuan = { tuan: string; ds: Record<string, { name: string; avatar: string; diem: number; van: number }> };
 function tuanNay(d = new Date()) {
   const t = new Date(d.getFullYear(), d.getMonth(), d.getDate());
@@ -44,7 +44,7 @@ export function registerDataRoutes(app: Express) {
       writeJsonAtomic(USED_FILE, clean);
       res.json({ success: true });
     } catch (err) {
-      console.error('Không lưu được data/da-hoi.json:', err);
+      console.error('Không lưu được data/used-questions.json:', err);
       res.status(500).json({ success: false });
     }
   });
@@ -69,7 +69,7 @@ export function registerDataRoutes(app: Express) {
     try {
       writeJsonAtomic(TUAN_FILE, b);
     } catch (err) {
-      console.error('Không lưu được data/bang-tuan.json:', err);
+      console.error('Không lưu được data/weekly-board.json:', err);
     }
     res.json({ top: topTuan(b) });
   });

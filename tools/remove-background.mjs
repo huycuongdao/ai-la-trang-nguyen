@@ -1,5 +1,5 @@
-// Tách nền trắng ảnh MC -> public/assets/nv/mc/<tên>.webp nền trong suốt.
-// Chạy lại khi thay ảnh trong public/assets/MC:  node tools/tach-nen.mjs
+// Tách nền trắng ảnh ông đồ và tam khôi -> public/assets/characters/{host,winners}/<tên>.webp nền trong suốt.
+// Chạy lại khi thay ảnh trong art-source/host hoặc art-source/winners:  node tools/remove-background.mjs
 // Nền = vùng gần trắng NỐI với mép ảnh (râu trắng nằm trong người nên không bị ăn).
 // Giữ mảng lớn nhất (bỏ pháo giấy rời rạc). Mọi tư thế cùng chiều cao để đổi tư thế không nhảy.
 import sharp from 'sharp';
@@ -10,18 +10,14 @@ const ROOT = path.resolve(import.meta.dirname, '..');
 const TOL = 22; // lệch tối đa so với màu nền
 // [thư mục gốc, thư mục ra, chiều cao ra, [[tên file gốc (đoạn đầu), tên ra]]]
 const JOBS = [
-  ['public/assets/MC', 'public/assets/nv/mc', 760, [
-    ['Elderly_teacher_celebrating', 'mung'],
-    ['Elderly_teacher_holding', 'suy-nghi'],
-    ['Teacher_holding_microphone_on_stage', 'chi'],
-    ['Teacher_holding_microphone_smiling', 'cuoi'],
-    ['Teacher_showing_regret', 'tiec'],
+  ['art-source/host', 'public/assets/characters/host', 760, [
+    ['cheer', 'cheer'], ['think', 'think'], ['point', 'point'], ['smile', 'smile'], ['regret', 'regret'],
   ]],
-  // Tam khôi (ảnh chủ kênh vẽ): top1/2/3, nam/nu
-  ['public/assets/top', 'public/assets/nv/top', 900, [
-    ['top1-nam', 'top1-nam'], ['top1-nu', 'top1-nu'],
-    ['top2-nam', 'top2-nam'], ['top2-nu', 'top2-nu'],
-    ['top3-nam', 'top3-nam'], ['top3-nu', 'top3-nu'],
+  // Tam khôi (ảnh chủ kênh vẽ): rank1/2/3, male/female
+  ['art-source/winners', 'public/assets/characters/winners', 900, [
+    ['rank1-male', 'rank1-male'], ['rank1-female', 'rank1-female'],
+    ['rank2-male', 'rank2-male'], ['rank2-female', 'rank2-female'],
+    ['rank3-male', 'rank3-male'], ['rank3-female', 'rank3-female'],
   ]],
 ];
 

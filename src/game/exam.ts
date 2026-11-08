@@ -1,8 +1,8 @@
 // Lõi game Ai Là Trạng Nguyên: không React, thời gian truyền vào (now) để test được.
 // Trang stage chạy 1 bản KyThi, trang điều khiển chỉ vẽ lại ảnh chụp view().
 import { GAME, type Level, type Vong } from './config';
-import { doanGioi, lenhGioi, lenhMien, type Gioi, type Mien } from './gioiTinh';
-import { sinhToan } from './toan';
+import { doanGioi, lenhGioi, lenhMien, type Gioi, type Mien } from './viewer-traits';
+import { sinhToan } from './math-question';
 
 export interface McQ {
   id: string;

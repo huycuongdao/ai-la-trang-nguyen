@@ -1,6 +1,6 @@
 // Ông đồ trêu / đáp bình luận vào khoảng lặng.
 // KHÔNG BAO GIỜ đọc nguyên văn bình luận: chỉ nhận ra LOẠI bình luận rồi nói câu soạn sẵn có chèn tên.
-import { plain } from './thi';
+import { plain } from './exam';
 
 export type LoaiCmt = 'kho' | 'de' | 'chao' | 'goiY' | 'cuoi' | 'yeu' | 'sai';
 

@@ -1,9 +1,9 @@
-// Kiểm tra bộ câu hỏi: node tools/kiem-tra-cau-hoi.mjs [file...]
+// Kiểm tra bộ câu hỏi: node tools/check-questions.mjs [file...]
 // Báo lỗi cú pháp, đáp án trùng/dài, câu trùng giữa các file, câu thuần tiếng Anh, từ dễ sai theo thời gian.
 import fs from 'node:fs';
 import path from 'node:path';
 
-const DIR = path.resolve(import.meta.dirname, '../src/game/cau-hoi');
+const DIR = path.resolve(import.meta.dirname, '../src/game/questions');
 const LEVELS = ['de', 'vua', 'kho', 'dinh', 'meo'];
 const files = process.argv.slice(2).length ? process.argv.slice(2) : fs.readdirSync(DIR).filter((f) => f.endsWith('.txt')).map((f) => path.join(DIR, f));
 const plain = (s) => s.normalize('NFD').replace(/\p{M}/gu, '').replace(/đ/gi, 'd').toLowerCase().replace(/[^a-z0-9]/g, '');

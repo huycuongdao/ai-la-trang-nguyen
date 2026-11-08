@@ -11,9 +11,9 @@ body,
   height: 100%;
 }
 
-/* Nền stage. Đổi ảnh: bỏ ảnh vào public/assets/bg/ rồi thay dòng background */
+/* Nền stage. Đổi ảnh: bỏ ảnh vào public/assets/background/ rồi thay dòng background */
 .stage-bg {
-  background: url('/assets/bg/nen2.jpg') top center / 1080px 1920px no-repeat #1d0d0a;
+  background: url('/assets/background/village-yard.jpg') top center / 1080px 1920px no-repeat #1d0d0a;
 }
 
 /* Hiệu ứng khi đủ tim */

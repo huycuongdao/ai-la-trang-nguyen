@@ -1,7 +1,7 @@
-// Kiểm tra luật chơi: npx tsx src/game/thi.check.ts
+// Kiểm tra luật chơi: npx tsx src/game/exam.test.ts
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { choiceOf, diemDung, KyThi, parseMc } from './thi';
+import { choiceOf, diemDung, KyThi, parseMc } from './exam';
 import { GAME } from './config';
 
 // Đọc đáp án
@@ -19,7 +19,7 @@ assert.equal(diemDung(100, 5_000, 10_000), 75);
 
 // Bộ câu đọc được, đủ câu cho 1 ván
 const errors: string[] = [];
-const dir = new URL('./cau-hoi/', import.meta.url);
+const dir = new URL('./questions/', import.meta.url);
 const bank = fs.readdirSync(dir).filter((f) => f.endsWith('.txt')).flatMap((f) => parseMc(fs.readFileSync(new URL(f, dir), 'utf8'), errors));
 assert.deepEqual(errors, []);
 if (bank.length < 100) { console.log('Chưa đủ câu hỏi để chạy thử ván, bỏ qua phần ván'); }
@@ -107,10 +107,10 @@ for (let i = 0; i < 500; i++) k2.chat({ id: `u${i}`, name: `U${i}`, avatar: '', 
 assert.equal(k2.view(t).soNop, 500);
 assert.equal(k2.view(t).recent.length, 5);
 
-console.log('thi.check: OK');
+console.log('exam.test: OK');
 
 // Đoán nam / nữ theo tên + lệnh tự chọn
-import { doanGioi, lenhGioi } from './gioiTinh';
+import { doanGioi, lenhGioi } from './viewer-traits';
 assert.equal(doanGioi('Minh_Tuan'), 'nam');
 assert.equal(doanGioi('Lan Anh 🌸'), 'nu');
 assert.equal(doanGioi('Hoàng Long'), 'nam');
@@ -127,7 +127,7 @@ assert.equal(k3.gioiCua({ id: 'mt', name: 'Minh Tuấn' }), 'nam');
 console.log('gioiTinh: OK');
 
 // Câu toán tự sinh: 4 đáp án khác nhau, số dương, đáp án đúng tính lại khớp
-import { sinhToan } from './toan';
+import { sinhToan } from './math-question';
 for (let cap = 1; cap <= 4; cap++) {
   for (let i = 0; i < 500; i++) {
     const q = sinhToan(cap);
@@ -240,7 +240,7 @@ console.log('toan: OK');
 }
 
 // Ông đồ trêu: nhận loại bình luận, không hiểu nhầm, có giới hạn
-import { loaiCmt, Treu } from './treu';
+import { loaiCmt, Treu } from './banter';
 {
   assert.equal(loaiCmt('Khó quá!!'), 'kho');
   assert.equal(loaiCmt('dễ quá'), 'de');

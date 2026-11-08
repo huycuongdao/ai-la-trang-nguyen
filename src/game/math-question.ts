@@ -1,6 +1,6 @@
 // Câu toán nhẩm máy tự sinh: không bao giờ hết câu, không cần kiểm tra sự thật.
 // Cấp 1 khảo hạch · 2 thi Hương · 3 thi Hội · 4 thi Đình (2 bước).
-import type { McQ } from './thi';
+import type { McQ } from './exam';
 
 const ri = (rand: () => number, a: number, b: number) => a + Math.floor(rand() * (b - a + 1));
 

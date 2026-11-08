@@ -1,23 +1,23 @@
-// Cắt nhân vật nền trắng trong public/assets/nhan-vat/ -> public/assets/nv/lang/<ten>.webp nền trong suốt.
+// Cắt nhân vật nền trắng trong art-source/villagers/ -> public/assets/characters/villagers/<name>.webp nền trong suốt.
 // Một ảnh có nhiều người (tấm các cụ già) thì mỗi mảng lớn là 1 nhân vật.
-// Chạy lại khi thay ảnh:  node tools/cat-nhan-vat.mjs
+// Chạy lại khi thay ảnh:  node tools/cut-characters.mjs
 import sharp from 'sharp';
 import fs from 'node:fs';
 import path from 'node:path';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
-const SRC = path.join(ROOT, 'public/assets/nhan-vat');
-const OUT = path.join(ROOT, 'public/assets/nv/lang');
+const SRC = path.join(ROOT, 'art-source/villagers');
+const OUT = path.join(ROOT, 'public/assets/characters/villagers');
 const TOL = 22;
 // tên file gốc -> tên nhân vật (ảnh nhiều người: danh sách theo thứ tự trái sang phải, trên xuống dưới)
 const TEN = {
-  'Gemini_Generated_Image_4dl3444dl3444dl3.png': ['gia-lang', 'ba-cuoc', 'ba-non', 'ong-gay', 'ba-om-goi', 'ong-quat'],
-  'Gemini_Generated_Image_nn55z4nn55z4nn55.png': ['tre-nam'],
-  'Gemini_Generated_Image_p0eplsp0eplsp0ep.png': ['si-tu-nu'],
-  'Gemini_Generated_Image_pxliikpxliikpxli.png': ['si-tu-nam'],
-  'nu-tre-con.png': ['tre-nu'],
-  'Gemini_Generated_Image_1fn9tf1fn9tf1fn9.png': ['lung-nam'], // sĩ tử nhìn sau lưng
-  'Gemini_Generated_Image_jtwrlojtwrlojtwr.png': ['lung-nu'],
+  'elders-sheet.png': ['village-chief', 'old-woman-hoe', 'old-woman-hat', 'old-man-cane', 'old-woman-bundle', 'old-man-fan'],
+  'child-boy.png': ['child-boy'],
+  'scholar-female.png': ['scholar-female'],
+  'scholar-male.png': ['scholar-male'],
+  'child-girl.png': ['child-girl'],
+  'back-male.png': ['back-male'], // sĩ tử nhìn sau lưng
+  'back-female.png': ['back-female'],
 };
 const OUT_H = 600;
 

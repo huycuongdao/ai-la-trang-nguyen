@@ -12,6 +12,7 @@ import 'dotenv/config'; // first: modules below read process.env when they load
 import express from 'express';
 import path from 'path';
 import { ROOT } from './src/server/store';
+import { migrateData } from './src/server/data-migration';
 import { httpGuard } from './src/server/http-guard';
 import { createSseHub } from './src/server/sse-hub';
 import { caiDat, lastControl, registerSettings, savedTikTokUser, saveSettings } from './src/server/settings';
@@ -20,6 +21,8 @@ import { registerControlRoutes } from './src/server/control-routes';
 import { registerDataRoutes } from './src/server/weekly-board';
 import { registerTts } from './src/server/tts/tts-routes';
 import { registerGameHost } from './src/server/game-host';
+
+migrateData(); // old Vietnamese data file names -> English, before anything reads data
 
 const app = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3007;

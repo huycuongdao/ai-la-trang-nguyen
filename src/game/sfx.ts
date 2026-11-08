@@ -1,4 +1,4 @@
-import type { View } from './thi';
+import type { View } from './exam';
 
 /**
  * Âm thanh kiểu khoa cử, trình duyệt tự tạo (không cần file, không lo bản quyền). Chỉ phát ở trang stage.

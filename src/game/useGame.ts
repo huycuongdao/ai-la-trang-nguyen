@@ -3,16 +3,16 @@ import { useEffect, useState } from 'react';
 import { useLiveEvents } from '../live/useLiveEvents';
 import type { LiveStatus } from '../live/types';
 import { voice, speakableName } from '../live/voice';
-import { containsBanned } from '../live/bannedWords';
+import { containsBanned } from '../live/banned-words';
 import { NameBatcher } from '../live/scoreboard';
 import { detectWish, GiftThanker, makePicker, OncePerPerson, RecentPeople, WishLimiter } from '../live/chatter';
 import { IS_STAGE, MUTE } from '../live/page';
 import { sfx } from './sfx';
 import { GAME } from './config';
-import { KyThi, parseMc, type Ev, type View } from './thi';
-import { loaiCmt, Treu } from './treu';
-// Mọi file câu hỏi trong src/game/cau-hoi/ (mỗi chủ đề 1 file)
-const bankFiles = import.meta.glob<string>('./cau-hoi/*.txt', { query: '?raw', import: 'default', eager: true });
+import { KyThi, parseMc, type Ev, type View } from './exam';
+import { loaiCmt, Treu } from './banter';
+// Mọi file câu hỏi trong src/game/questions/ (mỗi chủ đề 1 file)
+const bankFiles = import.meta.glob<string>('./questions/*.txt', { query: '?raw', import: 'default', eager: true });
 const BANK = Object.values(bankFiles).flatMap((t) => parseMc(t));
 
 const pick = makePicker();

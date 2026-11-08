@@ -55,4 +55,4 @@ Bố mẹ có 6 con trai, mỗi người con trai có một em gái. Nhà đó c
 
 ## Kiểm tra
 
-Viết xong chạy `node tools/kiem-tra-cau-hoi.mjs src/game/cau-hoi/<file>.txt` và sửa hết lỗi.
+Viết xong chạy `node tools/check-questions.mjs src/game/questions/<file>.txt` và sửa hết lỗi.
