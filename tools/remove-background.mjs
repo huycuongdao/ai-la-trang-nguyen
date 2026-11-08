@@ -1,5 +1,5 @@
 // Tách nền trắng ảnh ông đồ và tam khôi -> public/assets/characters/{host,winners}/<tên>.webp nền trong suốt.
-// Chạy lại khi thay ảnh trong art-source/host hoặc art-source/winners:  node tools/remove-background.mjs
+// Chạy lại khi thay ảnh trong art-source/village-yard/host hoặc art-source/village-yard/winners:  node tools/remove-background.mjs
 // Nền = vùng gần trắng NỐI với mép ảnh (râu trắng nằm trong người nên không bị ăn).
 // Giữ mảng lớn nhất (bỏ pháo giấy rời rạc). Mọi tư thế cùng chiều cao để đổi tư thế không nhảy.
 import sharp from 'sharp';
@@ -10,11 +10,11 @@ const ROOT = path.resolve(import.meta.dirname, '..');
 const TOL = 22; // lệch tối đa so với màu nền
 // [thư mục gốc, thư mục ra, chiều cao ra, [[tên file gốc (đoạn đầu), tên ra]]]
 const JOBS = [
-  ['art-source/host', 'public/assets/characters/host', 760, [
+  ['art-source/village-yard/host', 'public/assets/characters/host', 760, [
     ['cheer', 'cheer'], ['think', 'think'], ['point', 'point'], ['smile', 'smile'], ['regret', 'regret'],
   ]],
   // Tam khôi (ảnh chủ kênh vẽ): rank1/2/3, male/female
-  ['art-source/winners', 'public/assets/characters/winners', 900, [
+  ['art-source/village-yard/winners', 'public/assets/characters/winners', 900, [
     ['rank1-male', 'rank1-male'], ['rank1-female', 'rank1-female'],
     ['rank2-male', 'rank2-male'], ['rank2-female', 'rank2-female'],
     ['rank3-male', 'rank3-male'], ['rank3-female', 'rank3-female'],

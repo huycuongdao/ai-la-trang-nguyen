@@ -6,7 +6,7 @@ import { GAME } from '../config';
 
 /**
  * Màn hình live 1080x1920: sân thi đầu làng, vẽ đè lên ảnh nền public/assets/background/village-yard.jpg
- * (cắt từ art-source/background/village-yard-source.png, phóng 1,12 lần cho rộng rãi). Toạ độ đo trên village-yard.jpg:
+ * (cắt từ art-source/village-yard/background/village-yard-source.png, phóng 1,12 lần cho rộng rãi). Toạ độ đo trên village-yard.jpg:
  *   bảng đen x 220-860, y 522-830 · mái tranh y 350-490 · tán đa y 0-350 · sân trống trước bảng y 850-960
  *   các dãy bàn y 1000-1660 (toạ độ từng bàn ở HANG) · lối đi giữa x 455-640 · nhà tranh, hàng rào bên phải x 900+
  * Chừa 250px dưới cùng và mép phải cho giao diện TikTok.

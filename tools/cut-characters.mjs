@@ -1,4 +1,4 @@
-// Cắt nhân vật nền trắng trong art-source/villagers/ -> public/assets/characters/villagers/<name>.webp nền trong suốt.
+// Cắt nhân vật nền trắng trong art-source/village-yard/villagers/ -> public/assets/characters/villagers/<name>.webp nền trong suốt.
 // Một ảnh có nhiều người (tấm các cụ già) thì mỗi mảng lớn là 1 nhân vật.
 // Chạy lại khi thay ảnh:  node tools/cut-characters.mjs
 import sharp from 'sharp';
@@ -6,7 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
-const SRC = path.join(ROOT, 'art-source/villagers');
+const SRC = path.join(ROOT, 'art-source/village-yard/villagers');
 const OUT = path.join(ROOT, 'public/assets/characters/villagers');
 const TOL = 22;
 // tên file gốc -> tên nhân vật (ảnh nhiều người: danh sách theo thứ tự trái sang phải, trên xuống dưới)
