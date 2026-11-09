@@ -17,7 +17,7 @@ export interface ThemeInfo {
 export const THEMES = {
   'dinh-lang': { label: 'Đình làng' },
   'village-yard': { label: 'Sân thi đầu làng' },
-  // football: art in art-source/vua-khan-dai; put its questions in src/game/questions/football/*.txt (until then the general bank is used)
+  // football: art in art-source/vua-khan-dai; football-only questions in src/game/questions/football/*.txt (no [meo] group there)
   'vua-khan-dai': { label: 'Vua Khán Đài (bóng đá)', questionPack: 'football' },
 } as const satisfies Record<string, ThemeInfo>;
 

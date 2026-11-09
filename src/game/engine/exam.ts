@@ -154,6 +154,28 @@ export const shuffle = <T,>(a: T[], rand: () => number) => {
   return a;
 };
 
+const TIER: Record<Level, number> = { de: 0, vua: 1, kho: 2, dinh: 3, meo: 3 };
+
+/**
+ * Questions that may be asked for `level`: the group's own questions first (least recently asked first, equal times in random order).
+ * Only when the group has fewer than `need` left (a themed pack without riddles, say) the other groups follow,
+ * nearest difficulty first and harder before easier, so a missing hard group is filled with hard questions, not easy ones.
+ */
+export function poolFor(
+  bank: McQ[], level: Level, need: number, skip: (id: string) => boolean, used: Record<string, number>, rand: () => number,
+): McQ[] {
+  const free = bank.filter((q) => !skip(q.id));
+  const byUsed = (a: McQ, b: McQ) => (used[a.id] ?? 0) - (used[b.id] ?? 0);
+  const own = shuffle(free.filter((q) => q.level === level), rand).sort(byUsed);
+  if (own.length >= need) return own;
+  const gap = (q: McQ) => {
+    const d = TIER[q.level] - TIER[level];
+    return Math.abs(d) * 2 + (d < 0 ? 1 : 0);
+  };
+  const rest = shuffle(free.filter((q) => q.level !== level), rand).sort((a, b) => gap(a) - gap(b) || byUsed(a, b));
+  return [...own, ...rest];
+}
+
 export class KyThi {
   phase: Phase = 'cho';
   endsAt = 0;
@@ -337,12 +359,8 @@ export class KyThi {
     GAME.vong.forEach((v, vi) => {
       const ds: McQ[] = [];
       for (const [level, n] of v.phan) {
-        // câu lâu chưa hỏi nhất trước, cùng mức thì ngẫu nhiên; nhóm thiếu câu thì lấy nhóm khác
-        const lay = (cung: boolean) =>
-          shuffle(this.bank.filter((q) => (cung ? q.level === level : true) && !taken.has(q.id)), this.rand)
-            .sort((a, b) => (this.used[a.id] ?? 0) - (this.used[b.id] ?? 0));
-        let pool = lay(true);
-        if (pool.length < n) pool = [...pool, ...lay(false).filter((q) => !pool.includes(q))];
+        // câu lâu chưa hỏi nhất trước, cùng mức thì ngẫu nhiên; nhóm thiếu câu thì lấy nhóm khó gần nhất
+        const pool = poolFor(this.bank, level, n, (id) => taken.has(id), this.used, this.rand);
         for (const q of pool.slice(0, n)) {
           taken.add(q.id);
           this.used[q.id] = now;

@@ -2,7 +2,7 @@
 // Sai hoặc không trả lời là bị loại, người cuối cùng thắng. Không ai đúng thì không ai bị loại.
 import { GAME } from '../config';
 import { LOAI, nhomCau } from '../elimination-config';
-import { choiceOf, plain, shuffle, type McQ } from './exam';
+import { choiceOf, plain, poolFor, shuffle, type McQ } from './exam';
 import { GiftBanner, type Qua } from './gift-banner';
 import type { SavedRound } from '../../server/hosted-mode';
 
@@ -236,14 +236,11 @@ export class LoaiTru {
   /** Câu lâu chưa hỏi nhất trong nhóm của câu này; nhóm hết thì lấy nhóm khác */
   private rutCau(now: number): Cau {
     const level = nhomCau(this.idx + 1);
-    const lay = (cung: boolean) =>
-      shuffle(this.bank.filter((q) => (cung ? q.level === level : true) && !this.daHoi.has(q.id)), this.rand)
-        .sort((a, b) => (this.used[a.id] ?? 0) - (this.used[b.id] ?? 0));
-    let pool = lay(true);
-    if (!pool.length) pool = lay(false);
+    const lay = () => poolFor(this.bank, level, 1, (id) => this.daHoi.has(id), this.used, this.rand);
+    let pool = lay();
     if (!pool.length) {
       this.daHoi.clear(); // hết sạch câu: hỏi lại từ đầu
-      pool = lay(true);
+      pool = lay();
     }
     const q = pool[0];
     this.daHoi.add(q.id);

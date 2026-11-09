@@ -2,9 +2,9 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { GAME } from '../game/config';
-import type { Ev, McQ } from '../game/engine/exam';
+import { parseMc, poolFor, type Ev, type McQ } from '../game/engine/exam';
 import { directRig, GOLDEN_START, goldenRand, loadGoldenBank, mulberry32, runScenario, type Rig } from '../game/engine/golden-scenario';
-import { GameHost, type HostDeps } from './game-host';
+import { GameHost, loadBank, type HostDeps } from './game-host';
 import type { SavedRound } from './hosted-mode';
 import { SPOKEN_ACK_FALLBACK_MS } from './spoken-queue';
 
@@ -296,6 +296,29 @@ function elimToReading() {
   r.host.command('custom', 'theme:dinh-lang');
   assert.equal(GAME.danhHieu(1), 'Trạng Nguyên');
   assert.equal(GAME.vong[3].ten, 'Thi Đình');
+}
+
+// ---- 9. The football theme asks football questions only, and a missing [meo] group is filled with hard questions ----
+{
+  const own = new Set(
+    fs.readdirSync(new URL('../game/questions/football/', import.meta.url)).filter((f) => f.endsWith('.txt'))
+      .flatMap((f) => parseMc(fs.readFileSync(new URL(`../game/questions/football/${f}`, import.meta.url), 'utf8'))).map((q) => q.id),
+  );
+  const football = loadBank('vua-khan-dai');
+  assert.ok(football.length >= 30 && football.every((q) => own.has(q.id)), 'football pack only');
+  assert.equal(loadBank('dinh-lang').filter((q) => own.has(q.id)).length, 0, 'other themes never see football questions');
+  const need = Object.fromEntries(GAME.vong.flatMap((v) => v.phan).map(([l, n]) => [l, 0]));
+  for (const v of GAME.vong) for (const [l, n] of v.phan) need[l] += n;
+  for (const l of ['de', 'vua', 'kho', 'dinh'] as const) {
+    assert.ok(football.filter((q) => q.level === l).length >= need[l] + (l === 'dinh' ? need.meo : 0), `enough ${l} questions for a game`);
+  }
+  // Thi Đình asks 2 [dinh] + 2 [meo]; the pack has no [meo], so all 4 must be [dinh], never an easy one
+  const taken = new Set<string>();
+  const dinh = poolFor(football, 'dinh', 2, (id) => taken.has(id), {}, mulberry32(3)).slice(0, 2);
+  dinh.forEach((q) => taken.add(q.id));
+  const meo = poolFor(football, 'meo', 2, (id) => taken.has(id), {}, mulberry32(3)).slice(0, 2);
+  assert.deepEqual([...dinh, ...meo].map((q) => q.level), ['dinh', 'dinh', 'dinh', 'dinh']);
+  assert.equal(new Set([...dinh, ...meo].map((q) => q.id)).size, 4);
 }
 
 console.log('game-host: OK');

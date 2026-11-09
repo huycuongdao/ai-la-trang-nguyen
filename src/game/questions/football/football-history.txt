@@ -1,0 +1,42 @@
+# Chủ đề: Bóng đá (chỉ dùng cho chủ đề "Vua Khán Đài"): World Cup, EURO, Ngoại hạng Anh, Champions League, cầu thủ
+# Chủ đề này không có nhóm [meo]; Thi Đình lấy câu [dinh], thiếu thì lấy câu khó nhất còn lại.
+# Quy đổi độ khó từ bộ 30 câu gốc: 1-3 = de, 4-5 = vua, 6-7 = kho, 8-10 = dinh.
+# Mùa giải viết "mùa giải 2003 đến 2004" (không dùng dấu gạch chéo) để ông MC đọc cho trôi.
+
+[de]
+Cristiano Ronaldo thi đấu cho đội tuyển quốc gia nào? | Bồ Đào Nha | Argentina | Tây Ban Nha | Brazil
+Lionel Messi là cầu thủ người nước nào? | Argentina | Brazil | Bồ Đào Nha | Tây Ban Nha
+Real Madrid là câu lạc bộ bóng đá của quốc gia nào? | Tây Ban Nha | Anh | Italy | Đức
+Old Trafford là sân nhà của câu lạc bộ nào? | Manchester United | Chelsea | Liverpool | Arsenal
+Trận derby Manchester là cuộc đối đầu giữa Manchester City và đội nào? | Manchester United | Liverpool | Arsenal | Chelsea
+Anfield là sân nhà của câu lạc bộ nào? | Liverpool | Everton | Chelsea | Arsenal
+Đội tuyển nào vô địch World Cup nam năm 2022? | Argentina | Pháp | Croatia | Brazil
+Đội tuyển nào là đội đầu tiên có 5 lần vô địch World Cup nam? | Brazil | Đức | Italy | Argentina
+Đội tuyển nào vô địch World Cup nam năm 2018? | Pháp | Croatia | Đức | Brazil
+
+[vua]
+Câu lạc bộ nào vô địch Ngoại hạng Anh mùa giải 2003 đến 2004 mà không thua trận nào? | Arsenal | Chelsea | Manchester United | Liverpool
+Ai ghi bàn thắng duy nhất trong trận chung kết World Cup nam 2014 giữa Đức và Argentina? | Mario Götze | Thomas Müller | Miroslav Klose | André Schürrle
+Huấn luyện viên nào dẫn dắt Manchester City vô địch Ngoại hạng Anh mùa giải 2011 đến 2012? | Roberto Mancini | Pep Guardiola | Manuel Pellegrini | Mark Hughes
+Huấn luyện viên nào dẫn dắt Leicester City vô địch Ngoại hạng Anh mùa giải 2015 đến 2016? | Claudio Ranieri | Nigel Pearson | Brendan Rodgers | Martin O’Neill
+Liverpool bị đội nào dẫn trước ba bàn sau hiệp một ở chung kết Champions League năm 2005? | AC Milan | Inter Milan | Juventus | Barcelona
+Cầu thủ nào cùng Mohamed Salah giành Vua phá lưới Ngoại hạng Anh mùa giải 2021 đến 2022? | Son Heung-min | Harry Kane | Cristiano Ronaldo | Sadio Mané
+
+[kho]
+Đội tuyển nào vô địch kỳ World Cup nam đầu tiên, tổ chức năm 1930? | Uruguay | Brazil | Italy | Argentina
+Đội tuyển nào thắng chủ nhà Bồ Đào Nha để vô địch EURO 2004? | Hy Lạp | Đan Mạch | Hà Lan | Cộng hòa Séc
+Ai là huấn luyện viên của Blackburn Rovers khi đội vô địch Ngoại hạng Anh mùa giải 1994 đến 1995? | Kenny Dalglish | Graeme Souness | Roy Hodgson | Ray Harford
+Ai giành Quả bóng vàng dành cho cầu thủ xuất sắc nhất World Cup 2006? | Zinedine Zidane | Fabio Cannavaro | Andrea Pirlo | Miroslav Klose
+Cầu thủ nào đã vô địch Champions League cùng cả Ajax, Real Madrid và AC Milan? | Clarence Seedorf | Edgar Davids | Patrick Kluivert | Zlatan Ibrahimović
+Ai giành giải Ballon d’Or năm 1995? | George Weah | Paolo Maldini | Jürgen Klinsmann | Roberto Baggio
+
+[dinh]
+Trong trận Southampton gặp Aston Villa năm 2015, cầu thủ nào ghi hat-trick trong 2 phút 56 giây? | Sadio Mané | Graziano Pellè | Shane Long | Jay Rodriguez
+Ai giành Vua phá lưới Ngoại hạng Anh mùa giải 1993 đến 1994 với 34 bàn cho Newcastle United? | Andy Cole | Alan Shearer | Peter Beardsley | Teddy Sheringham
+Đan Mạch được bổ sung vào vòng chung kết EURO 1992 để thay thế đội tuyển nào? | Nam Tư | Tiệp Khắc | Ba Lan | Romania
+Thủ môn Petr Čech giữ sạch lưới bao nhiêu trận ở Ngoại hạng Anh mùa giải 2004 đến 2005? | 24 trận | 22 trận | 26 trận | 28 trận
+Câu lạc bộ nào kết thúc Ngoại hạng Anh mùa giải 2007 đến 2008 với chỉ 11 điểm? | Derby County | Sunderland | Reading | Birmingham City
+Đội tuyển nào vô địch kỳ EURO đầu tiên, tổ chức năm 1960? | Liên Xô | Nam Tư | Pháp | Tây Ban Nha
+Ai ghi bàn thắng đầu tiên trong lịch sử Premier League, ngày 15 tháng 8 năm 1992? | Brian Deane | Alan Shearer | Teddy Sheringham | Les Ferdinand
+Ai ghi bàn thắng đầu tiên trong lịch sử World Cup nam, năm 1930? | Lucien Laurent | Jules Dewaquez | Ernest Libérati | André Maschinot
+Ai lập hat-trick đầu tiên trong lịch sử Premier League khi khoác áo Leeds United năm 1992? | Eric Cantona | Rod Wallace | Lee Chapman | Gary Speed
